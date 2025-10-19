@@ -26,3 +26,5 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 rootProject.name = "PebbleKitAndroid2"
 
 include(":common")
+include(":client")
+include(":server")
