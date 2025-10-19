@@ -1,0 +1,32 @@
+[versions]
+androidGradleCacheFix = "3.0.2"
+androidGradlePlugin = "8.13.0"
+dependencyAnalysis = "3.0.4"
+desugarJdkLibs = "2.1.5"
+detekt = "1.23.8"
+detekt-compilerWarnings = "0.0.4"
+kotlin = "2.2.20"
+kotlin-coroutines = "1.10.2"
+kotlinova = "4.0.0-alpha07"
+tomlj = "1.1.1"
+versionCatalogUpdate = "1.0.1"
+
+[libraries]
+# Dummy entry, we don't need to actually use the stdlib explicitly, but it is used for the version checker to auto update kotlin
+android-agp = { module = "com.android.tools.build:gradle", version.ref = "androidGradlePlugin" }
+androidGradleCacheFix = { module = "org.gradle.android.cache-fix:org.gradle.android.cache-fix.gradle.plugin", version.ref = "androidGradleCacheFix" }
+dependencyAnalysis = { module = "com.autonomousapps:dependency-analysis-gradle-plugin", version.ref = "dependencyAnalysis" }
+desugarJdkLibs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugarJdkLibs" }
+detekt-compilerWarnings = { module = "com.braisgabin.detekt:kotlin-compiler-wrapper", version.ref = "detekt-compilerWarnings" }
+detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
+detekt-plugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlin-coroutines" }
+kotlin-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-plugin-compose = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
+kotlinova-gradle = { module = "si.inova.kotlinova:gradle", version.ref = "kotlinova" }
+tomlj = { module = "org.tomlj:tomlj", version.ref = "tomlj" }
+
+[plugins]
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+versionCatalogUpdate = { id = "nl.littlerobots.version-catalog-update", version.ref = "versionCatalogUpdate" }
