@@ -1093,7 +1093,3 @@ compiler:
     active: true
     ignoreDiagnostic:
       - OPT_IN_USAGE
-
-kotlinovanavigation:
-  NavigationKeyNoEnums:
-    active: true

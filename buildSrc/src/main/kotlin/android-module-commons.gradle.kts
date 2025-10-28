@@ -18,15 +18,13 @@ commonAndroid {
     // Add a unique suffix to every module to stop AGP from complaining about "is used in multiple modules"
     // Workaround for the https://issuetracker.google.com/issues/332947919
     val uniqueNamespaceSuffix = path.removePrefix(":").replace(':', '.').replace("-", "")
-    namespace = "io.rebble.pebblekitandroid2.noresources.$uniqueNamespaceSuffix"
+    namespace = "io.rebble.pebblekit2.noresources.$uniqueNamespaceSuffix"
 
     compileSdk = 36
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-
-        isCoreLibraryDesugaringEnabled = true
     }
 
     defaultConfig {
@@ -64,12 +62,4 @@ kotlin {
         freeCompilerArgs.add("-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi")
         freeCompilerArgs.add("-opt-in=kotlinx.coroutines.FlowPreview")
     }
-}
-
-dependencies {
-    add("coreLibraryDesugaring", libs.desugarJdkLibs)
-}
-
-detekt {
-    config.from("$rootDir/config/detekt-android.yml")
 }

@@ -1,0 +1,35 @@
+pluginManagement {
+    repositories {
+        google {
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+                includeGroupByRegex("androidx.*")
+            }
+        }
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+include(":app")
+
+rootProject.name = "PebbleKit2_Sample"
+
+// Include PebbleKit library until
+// it is stable enough to make a release
+includeBuild("../..") {
+    dependencySubstitution {
+        substitute(module("io.rebble:pebblekit2"))
+            .using(project(":client"))
+    }
+}
+
+

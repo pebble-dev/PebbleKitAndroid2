@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools">
+    <queries>
+        <intent>
+            <action android:name="io.rebble.pebblekit2.SEND_DATA_TO_WATCH"/>
+        </intent>
+    </queries>
+</manifest>

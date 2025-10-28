@@ -1,4 +1,4 @@
- *.iml
+*.iml
 .gradle
 /local.properties
 /.idea/caches
@@ -7,15 +7,19 @@
 /.idea/workspace.xml
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
-/.idea/gradle.xml
-/.idea/vcs.xml
-/.idea/misc.xml
-/.idea/kotlinc.xml
-/.idea/compiler.xml
+/.idea/git_toolbox_prj.xml
 /.idea/.name
-/.idea/deploymentTargetDropDown.xml
+/.idea/AndroidProjectSystem.xml
+/.idea/compiler.xml
+/.idea/data_extraction_rules.xml
+/.idea/deploymentTargetSelector.xml
+/.idea/misc.xml
+/.idea/vcs.xml
 /.idea/runConfigurations.xml
 /.idea/modules
+/.idea/gradle.xml
+/.idea/kotlinc.xml
+/.idea/inspectionProfiles
 /.kotlin
 .DS_Store
 /build
@@ -23,6 +27,3 @@
 .externalNativeBuild
 .cxx
 local.properties
-/.idea/migrations.xml
-/merge.sarif
-/.idea/deploymentTargetSelector.xml
