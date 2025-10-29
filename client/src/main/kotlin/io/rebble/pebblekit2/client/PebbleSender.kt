@@ -25,7 +25,7 @@ public class PebbleSender(context: Context) : AutoCloseable {
     private val connector = SuspendingBindingConnection<UniversalRequestResponse>(
         context,
         {
-            val targetPkg = PebbleAndroidAppPicker.getCurrentlySelectedApp(context).also { println("targetPkg $it") }
+            val targetPkg = PebbleAndroidAppPicker.getCurrentlySelectedApp(context)
                 ?: return@SuspendingBindingConnection null
             Intent(PebbleKitIntents.SEND_DATA).setPackage(targetPkg)
         },

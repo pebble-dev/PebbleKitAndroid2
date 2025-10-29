@@ -47,7 +47,10 @@ public abstract class BasePebbleSenderReceiver : Service() {
                 val result = if (action == PebbleKitBundleKeys.ACTION_SEND_DATA_TO_WATCH) {
                     requestSendData(data, callingPackage)
                 } else {
-                    LOGGER.w { "Got unknown action $action from $callingPackage. Returning empty data..." }
+                    LOGGER.w {
+                        "Got unknown action ${action ?: "null"} from ${callingPackage ?: "null"}. " +
+                            "Returning empty data..."
+                    }
                     Bundle()
                 }
 
@@ -58,13 +61,13 @@ public abstract class BasePebbleSenderReceiver : Service() {
         private suspend fun requestSendData(input: Bundle, callingPackage: String?): Bundle {
             val watchappUuid = input.getString(PebbleKitBundleKeys.KEY_WATCHAPP_UUID)?.let { UUID.fromString(it) }
             if (watchappUuid == null) {
-                LOGGER.w { "Got a missing watchapp UUID from $callingPackage. Returning empty data...." }
+                LOGGER.w { "Got a missing watchapp UUID from ${callingPackage ?: "null"}. Returning empty data...." }
                 return Bundle()
             }
 
             val watches = input.getStringArray(PebbleKitBundleKeys.KEY_WATCHES_ID)?.map { WatchIdentifier(it) }
-            val data = (input.getBundle(PebbleKitBundleKeys.KEY_DATA_DICTIONARY) ?: Bundle())
-                .let { PebbleDictionaryItem.mapFromBundle(it) }
+            val dataBundle = input.getBundle(PebbleKitBundleKeys.KEY_DATA_DICTIONARY) ?: Bundle()
+            val data = PebbleDictionaryItem.mapFromBundle(dataBundle)
 
             val results = sendDataToPebble(callingPackage, watchappUuid, data, watches)
 

@@ -19,6 +19,10 @@ dependencyAnalysis {
         bundle("datastore") {
             includeGroup("androidx.datastore")
         }
+
+        bundle("kermit") {
+            includeGroup("co.touchlab")
+        }
     }
 }
 

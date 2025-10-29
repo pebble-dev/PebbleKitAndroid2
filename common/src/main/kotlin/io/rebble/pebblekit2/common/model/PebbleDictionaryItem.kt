@@ -67,7 +67,7 @@ public sealed class PebbleDictionaryItem {
 
                     else -> {
                         Logger.withTag("PebbleKit")
-                            .e { "Got unknown type $type while decoding PebbleDictionary" }
+                            .e { "Got unknown type ${type ?: "null"} while decoding PebbleDictionary" }
                         null
                     }
                 }

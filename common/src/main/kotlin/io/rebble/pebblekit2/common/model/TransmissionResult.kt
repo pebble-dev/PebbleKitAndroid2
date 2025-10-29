@@ -59,7 +59,7 @@ public sealed class TransmissionResult {
                 "SUCCESS" -> TransmissionResult.Success
                 else -> {
                     Logger.withTag("PebbleKit")
-                        .e { "Got unknown type $type while decoding TransmissionResult" }
+                        .e { "Got unknown type ${type ?: "null"} while decoding TransmissionResult" }
 
                     TransmissionResult.Unknown(type)
                 }

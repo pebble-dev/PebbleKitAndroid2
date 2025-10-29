@@ -52,7 +52,7 @@ public object PebbleAndroidAppPicker {
      */
     public suspend fun selectApp(packageName: String?, context: Context) {
         require(packageName == null || getAllEligibleApps(context).contains(packageName)) {
-            "Package $packageName is not a mobile Pebble app"
+            "Package ${packageName ?: "null"} is not a mobile Pebble app"
         }
 
         createOrGetDataStore(context).edit {
@@ -73,6 +73,7 @@ public object PebbleAndroidAppPicker {
             .distinct()
     }
 
+    @Suppress("InjectDispatcher") // We are forced to use hardcoded dispatcher here as this is a singleton
     private fun createOrGetDataStore(context: Context): DataStore<Preferences> {
         preferences?.let { return it }
 
