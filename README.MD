@@ -1,12 +1,109 @@
+A work-in-progress implementation of the new modern PebbleKit API for communication between phone companion apps and
+the watchapps on the Pebble-OS running watches.
+
+Based
+on [this design document](https://docs.google.com/document/d/1BcX7W9HEBays5puwcRQh1GzClyHc014IRzEIuk7lLuk/edit?tab=t.0).
+
 # Usage
 
-# Logging
+## Client-side (app) usage
+
+(See [sample app](sample) for examples)
+
+### Installation
+
+During the experimental phase, library is not yet pushed to the maven central. To useit , you will have to use git
+submodules
+to include it:
+
+1. Download the repository using `git submodule add https://github.com/pebble-dev/PebbleKitAndroid2.git`    
+   (If your project does not use git, you can just download this repo and put it into `PebbleKitAndroid2` folder)
+2. Include build in your app's `settings.gradle(.kts)`:
+
+```kotlin
+includeBuild("PebbleKitAndroid2") {
+    dependencySubstitution {
+        substitute(module("io.rebble:pebblekit2"))
+            .using(project(":client"))
+    }
+}
+```
+
+3. Add dependency in your app's `build.gradle(.kts)`: `implementation("io.rebble:pebblekit2:0.0.0")`
+
+### Reference your app in the watchapp
+
+In your watchapp's `package.json`, add a `companionApp` section:
+
+```json
+{
+  "pebble": {
+    ...
+    "companionApp": {
+      "android": {
+        "url": "{LINK TO THE GITHUB/PLAY STORE WHERE USERS CAN GET THE COMPANION APP}",
+        "apps": [
+          {
+            "package": "{COMPANION ANDROID APP PACKAGE}"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+You can specify as many packages as you want, for example if you have debug and release variants. Pebble app will
+connect to the first app on the list that is installed on the user's Android device
+
+### Sending data
+
+To send data to the watch, you need to first create an instance of the `PebbleSender`:
+
+```kotlin
+val sender = PebbleSender()
+```
+
+then craft your message (
+see [Sending and receiving data](https://developer.rebble.io/guides/communication/sending-and-receiving-data/)
+for more info on the message structure) by creating a map of tuples to send to the watch:
+
+```kotlin
+val dataToSend = mapOf(
+    1u to PebbleDictionaryItem.String("Hello at ${LocalTime.now().toString()}"),
+    2u to PebbleDictionaryItem.UInt8(10u),
+)
+```
+
+and send it by calling the method on the `PebbleSender`:
+
+`val result = sender.sendDataToPebble(APP_UUID, dataToSend)`
+
+where the APP_UUID is the UUID of the target watchapp. Optionally, if you want to send data to a specific watch
+(and the target Pebble app supports multiple connected watches), you can specify `watches` parameter of the
+`sendDataToPebble method`.
+
+The `result` will contain the result of the sending
+(see [TransmissionResult](common/src/main/kotlin/io/rebble/pebblekit2/common/model/TransmissionResult.kt)).
+
+`sendDataToPebble()` method is a suspending method and needs to be called from a coroutine. See
+[Kotlin Coroutines](https://kotlinlang.org/docs/coroutines-overview.html) for more info.
+
+when you are done with sending your messages, do not forget to call the close method:
+
+`sender.close()`
+
+## Logging
 
 All non-fatal errors and warnings from the PebbleKit library are logged using the
 [Kermit](https://kermit.touchlab.co) library.
 
 By default, they are only logged to the Logcat, but this can be customized by writing custom Kermit
 LogWriters.
+
+## Server-side (Pebble mobile app) usage
+
+See [SERVER.MD](docs/SERVER.MD).
 
 # Technical details
 
