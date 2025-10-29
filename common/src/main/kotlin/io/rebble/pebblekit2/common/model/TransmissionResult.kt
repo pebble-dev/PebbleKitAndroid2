@@ -27,14 +27,14 @@ public sealed class TransmissionResult {
     public data object FailedTimeout : TransmissionResult()
 
     /**
-     * A different app is currently open on the watch than the watch you wanted to send the data to. Only
+     * A different app is currently open on the watch than the app you wanted to send the data to. Only
      * foreground Pebble app can send and receive AppMessages.
      */
     public data object FailedDifferentAppOpen : TransmissionResult()
 
     /**
-     * This companion app does not have permissions to send the data to the target watch app. This happens
-     * when this app is not added to the list of android packages in the watchapp's manifest.json.
+     * This companion app does not have the permissions to send the data to the target watch app. This happens
+     * when this app is not added to the list of android packages in the watchapp's package.json.
      */
     public data object FailedNoPermissions : TransmissionResult()
 
