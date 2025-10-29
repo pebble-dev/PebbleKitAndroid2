@@ -45,12 +45,17 @@ class PebbleSenderReceiver : BasePebbleSenderReceiver() {
 
 ```xml
 
-<service android:name="package.of.my.PebbleSenderReceiver" android:exported="true">
+<service android:name="package.of.my.PebbleSenderReceiver" 
+         android:exported="true" 
+         android:permission="io.rebble.pebblekit2.permission.SEND_DATA_TO_WATCH">
     <intent-filter>
         <action android:name="io.rebble.pebblekit2.SEND_DATA_TO_WATCH"/>
     </intent-filter>
 </service>
 ```
+
+Do not forget to declare the permissions, which ensures that only apps with the sending
+permission can connect to the watch.
 
 3. That's it. Whenever companion app wants to send data to the watch, your `BasePebbleSenderReceiver`
    will be automatically constructed by the Android system and its suspending methods will be called.

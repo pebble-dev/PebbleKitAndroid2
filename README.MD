@@ -58,7 +58,13 @@ connect to the first app on the list that is installed on the user's Android dev
 
 ### Sending data
 
-To send data to the watch, you need to first create an instance of the `PebbleSender`:
+To send data to the watch, you need to first declare a data sending permission in your manifest:
+
+`<uses-permission android:name="io.rebble.pebblekit2.permission.SEND_DATA_TO_WATCH" />`
+
+this is a normal permission, so user does not need to confirm it explicitly.
+
+Now that you have the permissions, create an instance of the `PebbleSender`:
 
 ```kotlin
 val sender = PebbleSender()
