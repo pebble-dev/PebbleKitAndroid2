@@ -62,3 +62,27 @@ permission can connect to the watch.
 
 Note: by default, suspending methods are called on the main coroutine scope, but you can change that by overriding the
 `coroutineScope` of the `BasePebbleSenderReceiver`
+
+# Sending data to apps
+
+To send the data from the watch to the companion apps, you first a data reception permission:
+
+`<uses-permission android:name="io.rebble.pebblekit2.permission.RECEIVE_DATA_FROM_WATCH" />`
+
+then you need to create a `PebbleListenerConnector`, when a watchapp
+with a companion is opened on the watch:
+
+```kotlin
+// targetPackages = the list of packages in the watchapp's package.json
+private val connector = PebbleListenerConnector(context, targetPackages)
+```
+
+now you can call the functions for the appropriate callbacks, whenever events from the watch occur.
+
+At the end, do not forget to close the connector. To ensure the companion app has some time to clean up after
+the watchapp stopped event, close the connector with a delay of a few seconds:
+
+```kotlin
+delay(5.seconds)
+connector.close()
+```

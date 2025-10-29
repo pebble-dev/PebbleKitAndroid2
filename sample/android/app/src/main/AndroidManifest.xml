@@ -22,6 +22,14 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <service android:name=".PebbleListenerService"
+                 android:exported="true"
+                 android:permission="io.rebble.pebblekit2.permission.RECEIVE_DATA_FROM_WATCH">
+            <intent-filter>
+                <action android:name="io.rebble.pebblekit2.RECEIVE_DATA_FROM_WATCH"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

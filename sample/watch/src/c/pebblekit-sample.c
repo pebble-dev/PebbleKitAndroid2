@@ -4,15 +4,45 @@ static Window *s_window;
 static TextLayer *s_text_layer;
 
 static void prv_select_click_handler(ClickRecognizerRef recognizer, void *context) {
-  text_layer_set_text(s_text_layer, "Select");
+  // Declare the dictionary's iterator
+  DictionaryIterator *out_iter;
+
+  // Prepare the outbox buffer for this message
+  AppMessageResult result = app_message_outbox_begin(&out_iter);
+  if(result == APP_MSG_OK) {
+    dict_write_uint8(out_iter, 1, 1);
+    app_message_outbox_send();
+  } else {
+    APP_LOG(APP_LOG_LEVEL_ERROR, "Error preparing the outbox: %d", (int)result);
+  }
 }
 
 static void prv_up_click_handler(ClickRecognizerRef recognizer, void *context) {
-  text_layer_set_text(s_text_layer, "Up");
+  // Declare the dictionary's iterator
+  DictionaryIterator *out_iter;
+
+  // Prepare the outbox buffer for this message
+  AppMessageResult result = app_message_outbox_begin(&out_iter);
+  if(result == APP_MSG_OK) {
+    dict_write_uint8(out_iter, 1, 0);
+    app_message_outbox_send();
+  } else {
+    APP_LOG(APP_LOG_LEVEL_ERROR, "Error preparing the outbox: %d", (int)result);
+  }
 }
 
 static void prv_down_click_handler(ClickRecognizerRef recognizer, void *context) {
-  text_layer_set_text(s_text_layer, "Down");
+  // Declare the dictionary's iterator
+  DictionaryIterator *out_iter;
+
+  // Prepare the outbox buffer for this message
+  AppMessageResult result = app_message_outbox_begin(&out_iter);
+  if(result == APP_MSG_OK) {
+    dict_write_uint8(out_iter, 1, 2);
+    app_message_outbox_send();
+  } else {
+    APP_LOG(APP_LOG_LEVEL_ERROR, "Error preparing the outbox: %d", (int)result);
+  }
 }
 
 static void prv_click_config_provider(void *context) {

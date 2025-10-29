@@ -38,7 +38,6 @@ In your watchapp's `package.json`, add a `companionApp` section:
 ```json
 {
   "pebble": {
-    ...
     "companionApp": {
       "android": {
         "url": "{LINK TO THE GITHUB/PLAY STORE WHERE USERS CAN GET THE COMPANION APP}",
@@ -98,6 +97,49 @@ The `result` will contain the result of the sending
 when you are done with sending your messages, do not forget to call the close method:
 
 `sender.close()`
+
+### Receive data
+
+First, create an implementation of the `BasePebbleListenerService`, where you override desired callbacks:
+
+```kotlin
+class PebbleListenerService: BasePebbleListenerService() {
+    override suspend fun onMessageReceived(
+        watchapUUID: UUID,
+        data: PebbleDictionary,
+        watch: WatchIdentifier
+    ): ReceiveResult {
+        // ...
+    }
+
+    override fun onAppOpened(watchapUUID: UUID, watch: WatchIdentifier) {
+        // ...
+    }
+
+    override fun onAppClosed(watchapUUID: UUID, watch: WatchIdentifier) {
+        // ...
+    }
+}
+```
+
+Then, add the receiver as a service to your app's `AndroidManifest.xml`,
+with the `io.rebble.pebblekit2.RECEIVE_DATA_FROM_WATCH` intent filter:
+
+```xml
+<service android:name="package.of.my.PebbleListenerService"
+         android:exported="true"
+         android:permission="io.rebble.pebblekit2.permission.RECEIVE_DATA_FROM_WATCH">
+    <intent-filter>
+        <action android:name="io.rebble.pebblekit2.RECEIVE_DATA_FROM_WATCH"/>
+    </intent-filter>
+</service>
+```
+
+Do not forget to declare the permissions, which ensures that only apps with the receiving
+permission can bind and send data to your app.
+
+That's it. When your watchapp is opened on the watch, the listener service should be bounded and the
+start callback called.
 
 ## Logging
 
