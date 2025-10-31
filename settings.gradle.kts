@@ -27,4 +27,6 @@ rootProject.name = "PebbleKitAndroid2"
 
 include(":common")
 include(":client")
+include(":client-api")
 include(":server")
+include(":server-api")

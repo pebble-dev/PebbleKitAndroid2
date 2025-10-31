@@ -64,7 +64,7 @@ public abstract class BasePebbleListenerService : Service() {
 
     private inner class Binder : UniversalRequestResponseSuspending(this, coroutineScope) {
         override suspend fun request(data: Bundle, callingPackage: String?): Bundle {
-            val selectedApp = PebbleAndroidAppPicker.getCurrentlySelectedApp(this@BasePebbleListenerService)
+            val selectedApp = DefaultPebbleAndroidAppPicker.getCurrentlySelectedApp(this@BasePebbleListenerService)
 
             if (selectedApp != callingPackage) {
                 LOGGER.w {

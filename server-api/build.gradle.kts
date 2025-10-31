@@ -10,8 +10,4 @@ android {
 
 dependencies {
     api(projects.common)
-    api(projects.serverApi)
-    api(libs.androidx.core)
-    api(libs.kotlin.coroutines)
-    api(libs.kermit)
 }
