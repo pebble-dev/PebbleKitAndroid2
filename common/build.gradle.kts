@@ -9,7 +9,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.core)
     implementation(libs.kotlin.coroutines)
     implementation(libs.kermit)
 }
