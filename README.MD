@@ -190,6 +190,29 @@ cursor?.use { cursor ->
 
 (Note that only the `projection` parameter is supported, other content resolver parameters are ignored)
 
+### Selecting target Pebble app
+
+By default, this library will auto-connect and auto-accept requests from any Pebble app.
+If your app is sending/receiving sensitive data, this might be a security risk as any app masquerading as a
+Pebble app could be used to steal that data.
+
+To mitigate for this, you can disable automatic selection and manually grant access to the specific Pebble app,
+using `PebbleAndroidAppPicker` object.
+
+First, you have to disable automatic selection:
+
+`PebbleAndroidAppPicker.enableAutoSelect = false`
+
+Then, you can get a list of all installed Pebble apps:
+
+`val apps = PebbleAndroidAppPicker.getAllEligibleApps(context)`
+
+finally, select the app that you want to grant access to:
+
+`PebbleAndroidAppPicker.selectApp(pebbleAppPackage, context)`
+
+Now, PebbleKit will only talk to the app with the `pebbleAppPackage` package.
+
 ## Logging
 
 All non-fatal errors and warnings from the PebbleKit library are logged using the
