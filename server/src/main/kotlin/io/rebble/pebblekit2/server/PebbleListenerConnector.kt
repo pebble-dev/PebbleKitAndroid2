@@ -55,7 +55,7 @@ public class PebbleListenerConnector(context: Context, private val targetPackage
             PebbleKitBundleKeys.KEY_WATCH_ID to watch.value
         )
 
-        val returnBundle = connection.request(bundle)
+        val returnBundle = connection.request(bundle) ?: return null
         val resultBundle = returnBundle.getBundle(PebbleKitBundleKeys.KEY_RECEIVE_RESULT) ?: Bundle()
 
         return ReceiveResult.fromBundle(resultBundle)

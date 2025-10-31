@@ -56,7 +56,7 @@ public class PebbleSender(context: Context) : AutoCloseable {
             PebbleKitBundleKeys.KEY_WATCHES_ID to watches?.map { it.value }?.toTypedArray()
         )
 
-        val returnBundle = connection.request(bundle)
+        val returnBundle = connection.request(bundle) ?: return null
         val resultsBundle = returnBundle.getBundle(PebbleKitBundleKeys.KEY_TRANSMISSION_RESULTS) ?: Bundle()
 
         return resultsBundle.keySet().associate { key ->
