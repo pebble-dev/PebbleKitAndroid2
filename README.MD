@@ -141,6 +141,11 @@ permission can bind and send data to your app.
 That's it. When your watchapp is opened on the watch, the listener service should be bounded and the
 start callback called.
 
+### Starting/stopping the app
+
+You can call `sender.startAppOnTheWatch()` and `sender.stopAppOnTheWatch()` to start/stop your app on the watch
+from the phone.
+
 ## Logging
 
 All non-fatal errors and warnings from the PebbleKit library are logged using the

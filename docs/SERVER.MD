@@ -29,14 +29,7 @@ To receive data from the companion apps (and forward it to the watch), you have 
 
 ```kotlin
 class PebbleSenderReceiver : BasePebbleSenderReceiver() {
-    override suspend fun sendDataToPebble(
-        callingPackage: String?,
-        app: UUID,
-        data: PebbleDictionary,
-        watches: List<WatchIdentifier>?
-    ): Map<WatchIdentifier, TransmissionResult> {
-        // TODO send data to the watch and return the result
-    }
+    // ...
 }
 ```
 

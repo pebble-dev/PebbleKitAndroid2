@@ -35,7 +35,9 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     SampleUI(
                         modifier = Modifier.fillMaxSize(),
-                        sendTimeToWatch = ::sendTimeToWatch
+                        sendTimeToWatch = ::sendTimeToWatch,
+                        openApp = ::openAppOnWatch,
+                        closeApp = ::closeAppOnWatch,
                     )
                 }
             }
@@ -53,6 +55,22 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun openAppOnWatch() {
+        lifecycleScope.launch {
+            val result = sender.startAppOnTheWatch(APP_UUID)
+
+            Log.d("PebbleKitSample", "Command sent. Result: $result")
+        }
+    }
+
+    private fun closeAppOnWatch() {
+        lifecycleScope.launch {
+            val result = sender.stopAppOnTheWatch(APP_UUID)
+
+            Log.d("PebbleKitSample", "Command sent. Result: $result")
+        }
+    }
+
     override fun onDestroy() {
         sender.close()
         super.onDestroy()
@@ -60,7 +78,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun SampleUI(sendTimeToWatch: () -> Unit, modifier: Modifier = Modifier) {
+fun SampleUI(sendTimeToWatch: () -> Unit, openApp: () -> Unit, closeApp: () -> Unit, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -68,6 +86,14 @@ fun SampleUI(sendTimeToWatch: () -> Unit, modifier: Modifier = Modifier) {
     ) {
         Button(onClick = sendTimeToWatch) {
             Text("Send Time to the watch")
+        }
+
+        Button(onClick = openApp) {
+            Text("Open app on the watch")
+        }
+
+        Button(onClick = closeApp) {
+            Text("Close app on the watch")
         }
     }
 }
@@ -78,6 +104,6 @@ private val APP_UUID = UUID.fromString("0054f75d-e60a-4932-8f8d-fe5c7dd365f6")
 @Composable
 fun SampleUIPreview() {
     PebbleKitSampleTheme {
-        SampleUI({})
+        SampleUI({}, {}, {})
     }
 }

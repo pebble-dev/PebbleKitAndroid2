@@ -32,6 +32,16 @@ public abstract class BasePebbleSenderReceiver : Service() {
         watches: List<WatchIdentifier>? = null,
     ): Map<WatchIdentifier, TransmissionResult>
 
+    public abstract suspend fun startAppOnTheWatch(
+        watchappUUID: UUID,
+        watches: List<WatchIdentifier>? = null,
+    ): Map<WatchIdentifier, TransmissionResult>
+
+    public abstract suspend fun stopAppOnTheWatch(
+        watchappUUID: UUID,
+        watches: List<WatchIdentifier>? = null,
+    ): Map<WatchIdentifier, TransmissionResult>
+
     override fun onBind(intent: Intent?): IBinder? {
         return Binder().asBinder()
     }
@@ -39,14 +49,26 @@ public abstract class BasePebbleSenderReceiver : Service() {
     private inner class Binder : UniversalRequestResponseSuspending(this, coroutineScope) {
         override suspend fun request(data: Bundle, callingPackage: String?): Bundle {
             val action = data.getString(PebbleKitBundleKeys.KEY_ACTION)
-            return if (action == PebbleKitBundleKeys.ACTION_SEND_DATA_TO_WATCH) {
-                requestSendData(data, callingPackage)
-            } else {
-                LOGGER.w {
-                    "Got unknown action ${action ?: "null"} from ${callingPackage ?: "null"}. " +
-                        "Returning empty data..."
+            return when (action) {
+                PebbleKitBundleKeys.ACTION_SEND_DATA_TO_WATCH -> {
+                    requestSendData(data, callingPackage)
                 }
-                Bundle()
+
+                PebbleKitBundleKeys.ACTION_START_APP -> {
+                    requestStartApp(data, callingPackage)
+                }
+
+                PebbleKitBundleKeys.ACTION_STOP_APP -> {
+                    requestStopApp(data, callingPackage)
+                }
+
+                else -> {
+                    LOGGER.w {
+                        "Got unknown action ${action ?: "null"} from ${callingPackage ?: "null"}. " +
+                            "Returning empty data..."
+                    }
+                    Bundle()
+                }
             }
         }
 
@@ -62,6 +84,46 @@ public abstract class BasePebbleSenderReceiver : Service() {
             val data = PebbleDictionaryItem.mapFromBundle(dataBundle)
 
             val results = sendDataToPebble(callingPackage, watchappUuid, data, watches)
+
+            val transmissionResults = Bundle().apply {
+                for ((key, value) in results) {
+                    putBundle(key.value, value.toBundle())
+                }
+            }
+
+            return bundleOf(PebbleKitBundleKeys.KEY_TRANSMISSION_RESULTS to transmissionResults)
+        }
+
+        private suspend fun requestStartApp(input: Bundle, callingPackage: String?): Bundle {
+            val watchappUuid = input.getString(PebbleKitBundleKeys.KEY_WATCHAPP_UUID)?.let { UUID.fromString(it) }
+            if (watchappUuid == null) {
+                LOGGER.w { "Got a missing watchapp UUID from ${callingPackage ?: "null"}. Returning empty data...." }
+                return Bundle()
+            }
+
+            val watches = input.getStringArray(PebbleKitBundleKeys.KEY_WATCHES_ID)?.map { WatchIdentifier(it) }
+
+            val results = startAppOnTheWatch(watchappUuid, watches)
+
+            val transmissionResults = Bundle().apply {
+                for ((key, value) in results) {
+                    putBundle(key.value, value.toBundle())
+                }
+            }
+
+            return bundleOf(PebbleKitBundleKeys.KEY_TRANSMISSION_RESULTS to transmissionResults)
+        }
+
+        private suspend fun requestStopApp(input: Bundle, callingPackage: String?): Bundle {
+            val watchappUuid = input.getString(PebbleKitBundleKeys.KEY_WATCHAPP_UUID)?.let { UUID.fromString(it) }
+            if (watchappUuid == null) {
+                LOGGER.w { "Got a missing watchapp UUID from ${callingPackage ?: "null"}. Returning empty data...." }
+                return Bundle()
+            }
+
+            val watches = input.getStringArray(PebbleKitBundleKeys.KEY_WATCHES_ID)?.map { WatchIdentifier(it) }
+
+            val results = stopAppOnTheWatch(watchappUuid, watches)
 
             val transmissionResults = Bundle().apply {
                 for ((key, value) in results) {

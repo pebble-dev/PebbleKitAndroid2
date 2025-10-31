@@ -33,12 +33,17 @@ public class PebbleSender(context: Context) : AutoCloseable {
     )
 
     /**
+     * Send an AppMessage to the app on the watch.
+     *
+     * Note that this requires your app's package to be listed in the app package.json's `companionApp` list.
+     *
      * @param watchappUUID UUID of the app you are sending the data to
      * @param data data to send
      * @param watches list of watches to send data to. If *null*, the message will be sent to all connected watches
      * @return a map of transmission results for all requested watches
      * (or all connected watches if [watches] param was null).
      * This returns empty map if the [watches] param was null and there were no connected watches.
+     *
      * Return value is null if Pebble app is not reachable
      * (for example if not installed or limited by the [PebbleAndroidAppPicker])
      */
@@ -47,14 +52,76 @@ public class PebbleSender(context: Context) : AutoCloseable {
         data: PebbleDictionary,
         watches: List<WatchIdentifier>? = null,
     ): Map<WatchIdentifier, TransmissionResult>? {
-        val connection = connector.getOrConnect() ?: return null
-
-        val bundle = bundleOf(
-            PebbleKitBundleKeys.KEY_ACTION to PebbleKitBundleKeys.ACTION_SEND_DATA_TO_WATCH,
-            PebbleKitBundleKeys.KEY_WATCHAPP_UUID to watchappUUID.toString(),
-            PebbleKitBundleKeys.KEY_DATA_DICTIONARY to data.toBundle(),
-            PebbleKitBundleKeys.KEY_WATCHES_ID to watches?.map { it.value }?.toTypedArray()
+        return sendRequestForWatches(
+            bundleOf(
+                PebbleKitBundleKeys.KEY_ACTION to PebbleKitBundleKeys.ACTION_SEND_DATA_TO_WATCH,
+                PebbleKitBundleKeys.KEY_WATCHAPP_UUID to watchappUUID.toString(),
+                PebbleKitBundleKeys.KEY_DATA_DICTIONARY to data.toBundle(),
+                PebbleKitBundleKeys.KEY_WATCHES_ID to watches?.map { it.value }?.toTypedArray<String>()
+            )
         )
+    }
+
+    /**
+     * Start the app on the watch.
+     *
+     * This method does not need any special permissions from the watchapp, you can trigger it for every app.
+     *
+     * @param watchappUUID UUID of the app you want to start
+     * @param watches list of watches to start the app on to. If *null*, the message will be sent to all connected watches
+     * @return a map of transmission results for all requested watches
+     * (or all connected watches if [watches] param was null).
+     * This returns empty map if the [watches] param was null and there were no connected watches.
+     *
+     * Return value is null if Pebble app is not reachable
+     * (for example if not installed or limited by the [PebbleAndroidAppPicker])
+     */
+    public suspend fun startAppOnTheWatch(
+        watchappUUID: UUID,
+        watches: List<WatchIdentifier>? = null,
+    ): Map<WatchIdentifier, TransmissionResult>? {
+        return sendRequestForWatches(
+            bundleOf(
+                PebbleKitBundleKeys.KEY_ACTION to PebbleKitBundleKeys.ACTION_START_APP,
+                PebbleKitBundleKeys.KEY_WATCHAPP_UUID to watchappUUID.toString(),
+                PebbleKitBundleKeys.KEY_WATCHES_ID to watches?.map { it.value }?.toTypedArray<String>()
+            )
+        )
+    }
+
+    /**
+     * Stop the app on the watch.
+     *
+     * This method does not need any special permissions from the watchapp, you can trigger it for every app.
+     *
+     * @param watchappUUID UUID of the app you want to stop
+     * @param watches list of watches to start the app on to. If *null*, the message will be sent to all connected watches
+     * @return a map of transmission results for all requested watches
+     * (or all connected watches if [watches] param was null).
+     * This returns empty map if the [watches] param was null and there were no connected watches.
+     *
+     * Return value is null if Pebble app is not reachable
+     * (for example if not installed or limited by the [PebbleAndroidAppPicker])
+     */
+    public suspend fun stopAppOnTheWatch(
+        watchappUUID: UUID,
+        watches: List<WatchIdentifier>? = null,
+    ): Map<WatchIdentifier, TransmissionResult>? {
+        return sendRequestForWatches(
+            bundleOf(
+                PebbleKitBundleKeys.KEY_ACTION to PebbleKitBundleKeys.ACTION_STOP_APP,
+                PebbleKitBundleKeys.KEY_WATCHAPP_UUID to watchappUUID.toString(),
+                PebbleKitBundleKeys.KEY_WATCHES_ID to watches?.map { it.value }?.toTypedArray<String>()
+            )
+        )
+    }
+
+    override fun close() {
+        connector.close()
+    }
+
+    private suspend fun sendRequestForWatches(bundle: Bundle): Map<WatchIdentifier, TransmissionResult>? {
+        val connection = connector.getOrConnect() ?: return null
 
         val returnBundle = connection.request(bundle) ?: return null
         val resultsBundle = returnBundle.getBundle(PebbleKitBundleKeys.KEY_TRANSMISSION_RESULTS) ?: Bundle()
@@ -66,9 +133,5 @@ public class PebbleSender(context: Context) : AutoCloseable {
 
             WatchIdentifier(key) to transmissionResult
         }
-    }
-
-    override fun close() {
-        connector.close()
     }
 }

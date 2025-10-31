@@ -13,4 +13,7 @@ public object PebbleKitBundleKeys {
     public const val ACTION_RECEIVE_DATA_FROM_WATCH: String = "ACTION_RECEIVE_DATA_FROM_WATCH"
     public const val ACTION_APP_OPENED: String = "APP_OPENED"
     public const val ACTION_APP_CLOSED: String = "APP_CLOSED"
+
+    public const val ACTION_START_APP: String = "START_APP"
+    public const val ACTION_STOP_APP: String = "STOP_APP"
 }
