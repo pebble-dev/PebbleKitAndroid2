@@ -27,7 +27,7 @@ public abstract class BasePebbleSenderReceiver : Service() {
 
     public abstract suspend fun sendDataToPebble(
         callingPackage: String?,
-        app: UUID,
+        watchappUUID: UUID,
         data: PebbleDictionary,
         watches: List<WatchIdentifier>? = null,
     ): Map<WatchIdentifier, TransmissionResult>

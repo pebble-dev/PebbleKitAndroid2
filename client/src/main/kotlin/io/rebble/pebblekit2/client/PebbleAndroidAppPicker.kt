@@ -31,7 +31,7 @@ public object PebbleAndroidAppPicker {
      * Returns a package name of the currently selected app,
      * or *null* if none is selected.
      *
-     * If [enableAutoSelect] is true, this method only returns *null* if there are no mobile Pebble apps isntalled.
+     * If [enableAutoSelect] is true, this method only returns *null* if there are no mobile Pebble apps installed.
      */
     public suspend fun getCurrentlySelectedApp(context: Context): String? {
         val allEligibleApps = getAllEligibleApps(context)

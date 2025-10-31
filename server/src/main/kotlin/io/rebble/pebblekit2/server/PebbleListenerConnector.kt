@@ -19,7 +19,7 @@ import java.util.UUID
 /**
  * Connector that binds to the [io.rebble.pebblekit2.client.BasePebbleListenerService] and sends it data.
  *
- * [close] should be called after you are done using the class (when none of the apps by the target app are active).
+ * [close] should be called after you are done using the class (when the app that started the listener is not active anymore).
  */
 public class PebbleListenerConnector(context: Context, private val targetPackages: List<String>) : AutoCloseable {
     private val connector = SuspendingBindingConnection<UniversalRequestResponse>(
@@ -42,7 +42,7 @@ public class PebbleListenerConnector(context: Context, private val targetPackage
      * @return null if the target app could not be reached
      */
     public suspend fun sendOnMessageReceived(
-        watchapUUID: UUID,
+        watchappUUID: UUID,
         data: PebbleDictionary,
         watch: WatchIdentifier,
     ): ReceiveResult? {
@@ -50,7 +50,7 @@ public class PebbleListenerConnector(context: Context, private val targetPackage
 
         val bundle = bundleOf(
             PebbleKitBundleKeys.KEY_ACTION to PebbleKitBundleKeys.ACTION_RECEIVE_DATA_FROM_WATCH,
-            PebbleKitBundleKeys.KEY_WATCHAPP_UUID to watchapUUID.toString(),
+            PebbleKitBundleKeys.KEY_WATCHAPP_UUID to watchappUUID.toString(),
             PebbleKitBundleKeys.KEY_DATA_DICTIONARY to data.toBundle(),
             PebbleKitBundleKeys.KEY_WATCH_ID to watch.value
         )
@@ -64,17 +64,17 @@ public class PebbleListenerConnector(context: Context, private val targetPackage
     /**
      * One of registered apps for this companion app has been opened on a watch
      *
-     * @return true if message was delivered successfuly
+     * @return true if message was delivered successfully
      */
     public suspend fun sendOnAppOpened(
-        watchapUUID: UUID,
+        watchappUUID: UUID,
         watch: WatchIdentifier,
     ): Boolean {
         val connection = connector.getOrConnect() ?: return false
 
         val bundle = bundleOf(
             PebbleKitBundleKeys.KEY_ACTION to PebbleKitBundleKeys.ACTION_APP_OPENED,
-            PebbleKitBundleKeys.KEY_WATCHAPP_UUID to watchapUUID.toString(),
+            PebbleKitBundleKeys.KEY_WATCHAPP_UUID to watchappUUID.toString(),
             PebbleKitBundleKeys.KEY_WATCH_ID to watch.value
         )
 
@@ -86,17 +86,17 @@ public class PebbleListenerConnector(context: Context, private val targetPackage
      * One of the previously-opened registered apps for this companion app has been closed on a watch. If this is the
      * last opened app, this service will self-terminate in several seconds.
      *
-     * @return true if message was delivered successfuly
+     * @return true if message was delivered successfully
      */
     public suspend fun sendOnAppClosed(
-        watchapUUID: UUID,
+        watchappUUID: UUID,
         watch: WatchIdentifier,
     ): Boolean {
         val connection = connector.getOrConnect() ?: return false
 
         val bundle = bundleOf(
             PebbleKitBundleKeys.KEY_ACTION to PebbleKitBundleKeys.ACTION_APP_CLOSED,
-            PebbleKitBundleKeys.KEY_WATCHAPP_UUID to watchapUUID.toString(),
+            PebbleKitBundleKeys.KEY_WATCHAPP_UUID to watchappUUID.toString(),
             PebbleKitBundleKeys.KEY_WATCH_ID to watch.value
         )
 

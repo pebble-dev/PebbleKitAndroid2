@@ -7,7 +7,7 @@ import co.touchlab.kermit.Logger
 public sealed class TransmissionResult {
 
     /**
-     * Data was sent successfuly
+     * Data was sent successfully
      */
     public data object Success : TransmissionResult()
 
@@ -39,7 +39,7 @@ public sealed class TransmissionResult {
     public data object FailedNoPermissions : TransmissionResult()
 
     /**
-     * Result of the transmission was unknown. This usually signified that app uses an outdated version of the
+     * Result of the transmission was unknown. This usually signifies that app uses an outdated version of the
      * PebbleKit library.
      *
      * @property message might tell more info.

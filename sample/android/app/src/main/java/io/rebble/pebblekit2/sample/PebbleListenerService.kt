@@ -9,19 +9,19 @@ import java.util.UUID
 
 class PebbleListenerService : BasePebbleListenerService() {
     override suspend fun onMessageReceived(
-        watchapUUID: UUID,
+        watchappUUID: UUID,
         data: PebbleDictionary,
         watch: WatchIdentifier,
     ): ReceiveResult {
-        Log.d("PebbleListenerService", "Received $data from app $watchapUUID on the watch $watch")
+        Log.d("PebbleListenerService", "Received $data from app $watchappUUID on the watch $watch")
         return ReceiveResult.Ack
     }
 
-    override fun onAppOpened(watchapUUID: UUID, watch: WatchIdentifier) {
-        Log.d("PebbleListenerService", "App  $watchapUUID on the watch $watch opened")
+    override fun onAppOpened(watchappUUID: UUID, watch: WatchIdentifier) {
+        Log.d("PebbleListenerService", "App  $watchappUUID on the watch $watch opened")
     }
 
-    override fun onAppClosed(watchapUUID: UUID, watch: WatchIdentifier) {
-        Log.d("PebbleListenerService", "App  $watchapUUID on the watch $watch closed")
+    override fun onAppClosed(watchappUUID: UUID, watch: WatchIdentifier) {
+        Log.d("PebbleListenerService", "App  $watchappUUID on the watch $watch closed")
     }
 }

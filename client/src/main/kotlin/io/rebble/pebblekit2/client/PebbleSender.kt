@@ -33,17 +33,17 @@ public class PebbleSender(context: Context) : AutoCloseable {
     )
 
     /**
-     * @param app UUID of the app you are sending the data to
+     * @param watchappUUID UUID of the app you are sending the data to
      * @param data data to send
      * @param watches list of watches to send data to. If *null*, the message will be sent to all connected watches
-     * @return a map of transmissision results for all requested watches
-     * (or all connected watches if [watch] param was null).
-     * This returns empty map if the [watch] param was null and there were no connected watches.
+     * @return a map of transmission results for all requested watches
+     * (or all connected watches if [watches] param was null).
+     * This returns empty map if the [watches] param was null and there were no connected watches.
      * Return value is null if Pebble app is not reachable
      * (for example if not installed or limited by the [PebbleAndroidAppPicker])
      */
     public suspend fun sendDataToPebble(
-        app: UUID,
+        watchappUUID: UUID,
         data: PebbleDictionary,
         watches: List<WatchIdentifier>? = null,
     ): Map<WatchIdentifier, TransmissionResult>? {
@@ -51,7 +51,7 @@ public class PebbleSender(context: Context) : AutoCloseable {
 
         val bundle = bundleOf(
             PebbleKitBundleKeys.KEY_ACTION to PebbleKitBundleKeys.ACTION_SEND_DATA_TO_WATCH,
-            PebbleKitBundleKeys.KEY_WATCHAPP_UUID to app.toString(),
+            PebbleKitBundleKeys.KEY_WATCHAPP_UUID to watchappUUID.toString(),
             PebbleKitBundleKeys.KEY_DATA_DICTIONARY to data.toBundle(),
             PebbleKitBundleKeys.KEY_WATCHES_ID to watches?.map { it.value }?.toTypedArray()
         )

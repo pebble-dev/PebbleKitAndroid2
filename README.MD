@@ -103,20 +103,20 @@ when you are done with sending your messages, do not forget to call the close me
 First, create an implementation of the `BasePebbleListenerService`, where you override desired callbacks:
 
 ```kotlin
-class PebbleListenerService: BasePebbleListenerService() {
+class PebbleListenerService : BasePebbleListenerService() {
     override suspend fun onMessageReceived(
-        watchapUUID: UUID,
+        watchappUUID: UUID,
         data: PebbleDictionary,
         watch: WatchIdentifier
     ): ReceiveResult {
         // ...
     }
 
-    override fun onAppOpened(watchapUUID: UUID, watch: WatchIdentifier) {
+    override fun onAppOpened(watchappUUID: UUID, watch: WatchIdentifier) {
         // ...
     }
 
-    override fun onAppClosed(watchapUUID: UUID, watch: WatchIdentifier) {
+    override fun onAppClosed(watchappUUID: UUID, watch: WatchIdentifier) {
         // ...
     }
 }

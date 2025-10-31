@@ -10,7 +10,7 @@ public sealed class ReceiveResult {
     public data object Nack : ReceiveResult()
 
     /**
-     * Result of the receiving was unknown. This usually signified that app uses an outdated version of the
+     * Result of the receiving was unknown. This usually signifies that app uses an outdated version of the
      * PebbleKit library.
      *
      * @property message might tell more info.

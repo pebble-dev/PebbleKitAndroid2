@@ -32,7 +32,7 @@ public abstract class BasePebbleListenerService : Service() {
      * [PebbleDictionaryItem.UInt32] or [PebbleDictionaryItem.Int32], regardless of their original size on the watch.
      */
     public open suspend fun onMessageReceived(
-        watchapUUID: UUID,
+        watchappUUID: UUID,
         data: PebbleDictionary,
         watch: WatchIdentifier,
     ): ReceiveResult {
@@ -43,7 +43,7 @@ public abstract class BasePebbleListenerService : Service() {
      * One of registered apps for this companion app has been opened on a watch
      */
     public open fun onAppOpened(
-        watchapUUID: UUID,
+        watchappUUID: UUID,
         watch: WatchIdentifier,
     ) {
     }
@@ -53,7 +53,7 @@ public abstract class BasePebbleListenerService : Service() {
      * last opened app, this service will self-terminate in several seconds.
      */
     public open fun onAppClosed(
-        watchapUUID: UUID,
+        watchappUUID: UUID,
         watch: WatchIdentifier,
     ) {
     }
