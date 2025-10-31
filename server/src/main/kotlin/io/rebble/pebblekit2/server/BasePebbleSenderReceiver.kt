@@ -7,16 +7,14 @@ import android.os.IBinder
 import androidx.core.os.bundleOf
 import co.touchlab.kermit.Logger
 import io.rebble.pebblekit2.PebbleKitBundleKeys
-import io.rebble.pebblekit2.common.SendDataCallback
-import io.rebble.pebblekit2.common.UniversalRequestResponse
 import io.rebble.pebblekit2.common.model.PebbleDictionary
 import io.rebble.pebblekit2.common.model.PebbleDictionaryItem
 import io.rebble.pebblekit2.common.model.TransmissionResult
 import io.rebble.pebblekit2.common.model.WatchIdentifier
 import io.rebble.pebblekit2.common.model.toBundle
+import io.rebble.pebblekit2.common.util.UniversalRequestResponseSuspending
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 import java.util.UUID
 
 /**
@@ -38,23 +36,17 @@ public abstract class BasePebbleSenderReceiver : Service() {
         return Binder().asBinder()
     }
 
-    private inner class Binder : UniversalRequestResponse.Stub() {
-        override fun request(data: Bundle, callback: SendDataCallback) {
-            val callingPackage = packageManager.getNameForUid(getCallingUid())
-
-            coroutineScope.launch {
-                val action = data.getString(PebbleKitBundleKeys.KEY_ACTION)
-                val result = if (action == PebbleKitBundleKeys.ACTION_SEND_DATA_TO_WATCH) {
-                    requestSendData(data, callingPackage)
-                } else {
-                    LOGGER.w {
-                        "Got unknown action ${action ?: "null"} from ${callingPackage ?: "null"}. " +
-                            "Returning empty data..."
-                    }
-                    Bundle()
+    private inner class Binder : UniversalRequestResponseSuspending(this, coroutineScope) {
+        override suspend fun request(data: Bundle, callingPackage: String?): Bundle {
+            val action = data.getString(PebbleKitBundleKeys.KEY_ACTION)
+            return if (action == PebbleKitBundleKeys.ACTION_SEND_DATA_TO_WATCH) {
+                requestSendData(data, callingPackage)
+            } else {
+                LOGGER.w {
+                    "Got unknown action ${action ?: "null"} from ${callingPackage ?: "null"}. " +
+                        "Returning empty data..."
                 }
-
-                callback.onResult(result)
+                Bundle()
             }
         }
 

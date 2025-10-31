@@ -7,16 +7,14 @@ import android.os.IBinder
 import androidx.core.os.bundleOf
 import co.touchlab.kermit.Logger
 import io.rebble.pebblekit2.PebbleKitBundleKeys
-import io.rebble.pebblekit2.common.SendDataCallback
-import io.rebble.pebblekit2.common.UniversalRequestResponse
 import io.rebble.pebblekit2.common.model.PebbleDictionary
 import io.rebble.pebblekit2.common.model.PebbleDictionaryItem
 import io.rebble.pebblekit2.common.model.ReceiveResult
 import io.rebble.pebblekit2.common.model.WatchIdentifier
 import io.rebble.pebblekit2.common.model.toBundle
+import io.rebble.pebblekit2.common.util.UniversalRequestResponseSuspending
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 import java.util.UUID
 
 /**
@@ -64,110 +62,105 @@ public abstract class BasePebbleListenerService : Service() {
         return Binder().asBinder()
     }
 
-    private inner class Binder : UniversalRequestResponse.Stub() {
-        override fun request(data: Bundle, callback: SendDataCallback) {
-            val callingPackage = packageManager.getNameForUid(getCallingUid())
+    private inner class Binder : UniversalRequestResponseSuspending(this, coroutineScope) {
+        override suspend fun request(data: Bundle, callingPackage: String?): Bundle {
+            val selectedApp = PebbleAndroidAppPicker.getCurrentlySelectedApp(this@BasePebbleListenerService)
 
-            coroutineScope.launch {
-                val selectedApp = PebbleAndroidAppPicker.getCurrentlySelectedApp(this@BasePebbleListenerService)
-                if (selectedApp != callingPackage) {
+            if (selectedApp != callingPackage) {
+                LOGGER.w {
+                    "Got message from non-selected app: ${callingPackage ?: "UNKNOWN"}" +
+                        ". Selected app: ${selectedApp ?: "NONE"}."
+                }
+
+                return Bundle()
+            }
+
+            val action = data.getString(PebbleKitBundleKeys.KEY_ACTION)
+            return when (action) {
+                PebbleKitBundleKeys.ACTION_RECEIVE_DATA_FROM_WATCH -> {
+                    handleReceiveData(data, callingPackage)
+                }
+
+                PebbleKitBundleKeys.ACTION_APP_OPENED -> {
+                    handleAppOpened(data, callingPackage)
+                }
+
+                PebbleKitBundleKeys.ACTION_APP_CLOSED -> {
+                    handleAppClosed(data, callingPackage)
+                }
+
+                else -> {
                     LOGGER.w {
-                        "Got message from non-selected app: ${callingPackage ?: "UNKNOWN"}" +
-                            ". Selected app: ${selectedApp ?: "NONE"}."
+                        "Got unknown action ${action ?: "UNKNOWN"} from ${callingPackage ?: "UNKNOWN"}. " +
+                            "Ignoring event..."
                     }
-                    callback.onResult(Bundle())
-                    return@launch
+                    Bundle()
                 }
-
-                val action = data.getString(PebbleKitBundleKeys.KEY_ACTION)
-                val result = when (action) {
-                    PebbleKitBundleKeys.ACTION_RECEIVE_DATA_FROM_WATCH -> {
-                        handleReceiveData(data, callingPackage)
-                    }
-
-                    PebbleKitBundleKeys.ACTION_APP_OPENED -> {
-                        handleAppOpened(data, callingPackage)
-                    }
-
-                    PebbleKitBundleKeys.ACTION_APP_CLOSED -> {
-                        handleAppClosed(data, callingPackage)
-                    }
-
-                    else -> {
-                        LOGGER.w {
-                            "Got unknown action ${action ?: "UNKNOWN"} from ${callingPackage ?: "UNKNOWN"}. " +
-                                "Ignoring event..."
-                        }
-                        Bundle()
-                    }
-                }
-
-                callback.onResult(result)
             }
         }
+    }
 
-        private suspend fun handleReceiveData(input: Bundle, callingPackage: String?): Bundle {
-            val watchappUuid = input.getString(PebbleKitBundleKeys.KEY_WATCHAPP_UUID)
-                ?.let { UUID.fromString(it) }
-            if (watchappUuid == null) {
-                LOGGER.w { "Got a missing watchapp UUID from ${callingPackage ?: "UNKNOWN"}. Ignoring event..." }
-                return Bundle()
-            }
-
-            val watchId = input.getString(PebbleKitBundleKeys.KEY_WATCH_ID)
-                ?.let { WatchIdentifier(it) }
-            if (watchId == null) {
-                LOGGER.w { "Got a missing watch ID from ${callingPackage ?: "UNKNOWN"}. Ignoring event..." }
-                return Bundle()
-            }
-
-            val dataBundle = input.getBundle(PebbleKitBundleKeys.KEY_DATA_DICTIONARY) ?: Bundle()
-            val data = PebbleDictionaryItem.mapFromBundle(dataBundle)
-
-            val result = onMessageReceived(watchappUuid, data, watchId)
-
-            return bundleOf(PebbleKitBundleKeys.KEY_TRANSMISSION_RESULTS to result.toBundle())
-        }
-
-        private fun handleAppOpened(input: Bundle, callingPackage: String?): Bundle {
-            val watchappUuid = input.getString(PebbleKitBundleKeys.KEY_WATCHAPP_UUID)
-                ?.let { UUID.fromString(it) }
-            if (watchappUuid == null) {
-                LOGGER.w { "Got a missing watchapp UUID from ${callingPackage ?: "UNKNOWN"}. Ignoring event..." }
-                return Bundle()
-            }
-
-            val watchId = input.getString(PebbleKitBundleKeys.KEY_WATCH_ID)
-                ?.let { WatchIdentifier(it) }
-            if (watchId == null) {
-                LOGGER.w { "Got a missing watch ID from ${callingPackage ?: "UNKNOWN"}. Ignoring event..." }
-                return Bundle()
-            }
-
-            onAppOpened(watchappUuid, watchId)
-
+    private suspend fun handleReceiveData(input: Bundle, callingPackage: String?): Bundle {
+        val watchappUuid = input.getString(PebbleKitBundleKeys.KEY_WATCHAPP_UUID)
+            ?.let { UUID.fromString(it) }
+        if (watchappUuid == null) {
+            LOGGER.w { "Got a missing watchapp UUID from ${callingPackage ?: "UNKNOWN"}. Ignoring event..." }
             return Bundle()
         }
 
-        private fun handleAppClosed(input: Bundle, callingPackage: String?): Bundle {
-            val watchappUuid = input.getString(PebbleKitBundleKeys.KEY_WATCHAPP_UUID)
-                ?.let { UUID.fromString(it) }
-            if (watchappUuid == null) {
-                LOGGER.w { "Got a missing watchapp UUID from ${callingPackage ?: "UNKNOWN"}. Ignoring event..." }
-                return Bundle()
-            }
-
-            val watchId = input.getString(PebbleKitBundleKeys.KEY_WATCH_ID)
-                ?.let { WatchIdentifier(it) }
-            if (watchId == null) {
-                LOGGER.w { "Got a missing watch ID from ${callingPackage ?: "UNKNOWN"}. Ignoring event..." }
-                return Bundle()
-            }
-
-            onAppClosed(watchappUuid, watchId)
-
+        val watchId = input.getString(PebbleKitBundleKeys.KEY_WATCH_ID)
+            ?.let { WatchIdentifier(it) }
+        if (watchId == null) {
+            LOGGER.w { "Got a missing watch ID from ${callingPackage ?: "UNKNOWN"}. Ignoring event..." }
             return Bundle()
         }
+
+        val dataBundle = input.getBundle(PebbleKitBundleKeys.KEY_DATA_DICTIONARY) ?: Bundle()
+        val data = PebbleDictionaryItem.mapFromBundle(dataBundle)
+
+        val result = onMessageReceived(watchappUuid, data, watchId)
+
+        return bundleOf(PebbleKitBundleKeys.KEY_TRANSMISSION_RESULTS to result.toBundle())
+    }
+
+    private fun handleAppOpened(input: Bundle, callingPackage: String?): Bundle {
+        val watchappUuid = input.getString(PebbleKitBundleKeys.KEY_WATCHAPP_UUID)
+            ?.let { UUID.fromString(it) }
+        if (watchappUuid == null) {
+            LOGGER.w { "Got a missing watchapp UUID from ${callingPackage ?: "UNKNOWN"}. Ignoring event..." }
+            return Bundle()
+        }
+
+        val watchId = input.getString(PebbleKitBundleKeys.KEY_WATCH_ID)
+            ?.let { WatchIdentifier(it) }
+        if (watchId == null) {
+            LOGGER.w { "Got a missing watch ID from ${callingPackage ?: "UNKNOWN"}. Ignoring event..." }
+            return Bundle()
+        }
+
+        onAppOpened(watchappUuid, watchId)
+
+        return Bundle()
+    }
+
+    private fun handleAppClosed(input: Bundle, callingPackage: String?): Bundle {
+        val watchappUuid = input.getString(PebbleKitBundleKeys.KEY_WATCHAPP_UUID)
+            ?.let { UUID.fromString(it) }
+        if (watchappUuid == null) {
+            LOGGER.w { "Got a missing watchapp UUID from ${callingPackage ?: "UNKNOWN"}. Ignoring event..." }
+            return Bundle()
+        }
+
+        val watchId = input.getString(PebbleKitBundleKeys.KEY_WATCH_ID)
+            ?.let { WatchIdentifier(it) }
+        if (watchId == null) {
+            LOGGER.w { "Got a missing watch ID from ${callingPackage ?: "UNKNOWN"}. Ignoring event..." }
+            return Bundle()
+        }
+
+        onAppClosed(watchappUuid, watchId)
+
+        return Bundle()
     }
 }
 
