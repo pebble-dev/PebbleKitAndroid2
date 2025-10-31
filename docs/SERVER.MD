@@ -79,3 +79,41 @@ the watchapp stopped event, close the connector with a delay of a few seconds:
 delay(5.seconds)
 connector.close()
 ```
+
+# Implementing status provider
+
+To allow apps to access various infos about the status of the watch and the connection, you have to implement the
+content provider.
+
+To do that, first make a subclass of the `BasePebbleKitProvider`:
+
+```kotlin
+class PebbleKitProvider : BasePebbleKitProvider() {
+    // ...
+}
+```
+
+Then, in your `Application.onCreate()` class, call `initialize()` method on the provider, after all of your
+logic is initialized and ready:
+
+```kotlin
+class MyApplication : Application() {
+    override fun onCreate() {
+        // ...
+        
+        pebbleKitProvider.initialize()
+    }
+}
+```
+
+Finally, add the provider to the manifest:
+
+```xml
+<provider
+    android:authorities="my.app.pebblekit"
+    android:name="package.of.my.PebbleKitProvider"
+    android:permission="io.rebble.pebblekit2.permission.READ_PROVIDER"
+    android:exported="true" />
+```
+
+Note that the authority must be `YOUR_APP_PACKAGE.pebblekit`. Do not forget to specify the permission.

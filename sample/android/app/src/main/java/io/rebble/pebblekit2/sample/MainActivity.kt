@@ -7,8 +7,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -16,12 +17,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
+import io.rebble.pebblekit2.PebbleKitProviderContract
+import io.rebble.pebblekit2.client.PebbleAndroidAppPicker
+import io.rebble.pebblekit2.client.PebbleInfoRetriever
 import io.rebble.pebblekit2.client.PebbleSender
 import io.rebble.pebblekit2.common.model.PebbleDictionaryItem
 import io.rebble.pebblekit2.sample.ui.theme.PebbleKitSampleTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.UUID
 
@@ -38,6 +45,7 @@ class MainActivity : ComponentActivity() {
                         sendTimeToWatch = ::sendTimeToWatch,
                         openApp = ::openAppOnWatch,
                         closeApp = ::closeAppOnWatch,
+                        connectedWatchesForeground = ::startGettingConnectedWatchesInForeground
                     )
                 }
             }
@@ -48,7 +56,7 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch {
             val result = sender.sendDataToPebble(
                 APP_UUID,
-                mapOf(1u to PebbleDictionaryItem.String("Hello at ${LocalTime.now().toString()}"))
+                mapOf(1u to PebbleDictionaryItem.String("Hello at ${LocalTime.now()}"))
             )
 
             Log.d("PebbleKitSample", "Message sent. Result: $result")
@@ -71,6 +79,18 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun startGettingConnectedWatchesInForeground() {
+        val infoRetriever = PebbleInfoRetriever(this)
+
+        lifecycleScope.launch {
+            infoRetriever.getConnectedWatches()
+                .flowOn(Dispatchers.Default)
+                .collect {
+                    Log.d("PebbleKitSample", "Connected watches update: $it")
+                }
+        }
+    }
+
     override fun onDestroy() {
         sender.close()
         super.onDestroy()
@@ -78,7 +98,13 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun SampleUI(sendTimeToWatch: () -> Unit, openApp: () -> Unit, closeApp: () -> Unit, modifier: Modifier = Modifier) {
+fun SampleUI(
+    sendTimeToWatch: () -> Unit,
+    openApp: () -> Unit,
+    closeApp: () -> Unit,
+    connectedWatchesForeground: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -95,6 +121,12 @@ fun SampleUI(sendTimeToWatch: () -> Unit, openApp: () -> Unit, closeApp: () -> U
         Button(onClick = closeApp) {
             Text("Close app on the watch")
         }
+
+        Spacer(Modifier.size(16.dp))
+
+        Button(onClick = connectedWatchesForeground) {
+            Text("Get connected watches (foreground)")
+        }
     }
 }
 
@@ -104,6 +136,6 @@ private val APP_UUID = UUID.fromString("0054f75d-e60a-4932-8f8d-fe5c7dd365f6")
 @Composable
 fun SampleUIPreview() {
     PebbleKitSampleTheme {
-        SampleUI({}, {}, {})
+        SampleUI({}, {}, {}, {})
     }
 }

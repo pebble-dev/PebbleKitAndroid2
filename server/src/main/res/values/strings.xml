@@ -2,4 +2,5 @@
 <resources>
     <string name="permission_label_send">Send data to the Pebble watch</string>
     <string name="permission_label_receive">Receive data from the Pebble watch</string>
+    <string name="permission_label_read_provider">Read status about the Pebble watch</string>
 </resources>

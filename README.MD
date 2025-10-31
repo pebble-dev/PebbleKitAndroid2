@@ -146,6 +146,49 @@ start callback called.
 You can call `sender.startAppOnTheWatch()` and `sender.stopAppOnTheWatch()` to start/stop your app on the watch
 from the phone.
 
+### Getting status about the Pebble watch
+
+You can also use `PebbleInfoRetriever` to retrieve various infos about the status of the Pebble watch and its connected.
+
+To access that, you first have to declare a provider read permission in your manifest:
+
+```xml
+
+<uses-permission android:name="io.rebble.pebblekit2.permission.READ_PROVIDER"/>
+```
+
+Then you can use the `PebbleInfoRetriever` to get the data`:
+
+```kotlin
+val infoRetriever = PebbleInfoRetriever(this)
+
+infoRetriever.getConnectedWatches()
+```
+
+Alternatively, you can also use the content resolver directly:
+
+```kotlin
+val pebbleAppPackage = PebbleAndroidAppPicker.getCurrentlySelectedApp(context)
+
+val cursor = contentResolver.query(
+    PebbleKitProviderContract.ConnectedWatch.getContentUri(pebbleAppPackage),
+    null,
+    null,
+    null,
+    null
+)
+cursor?.use { cursor ->
+    while (cursor.moveToNext()) {
+        val id = cursor.getString(cursor.getColumnIndexOrThrow(PebbleKitProviderContract.ConnectedWatch.ID))
+        val name = cursor.getString(cursor.getColumnIndexOrThrow(PebbleKitProviderContract.ConnectedWatch.NAME))
+        // ...
+
+    }
+}
+```
+
+(Note that only the `projection` parameter is supported, other content resolver parameters are ignored)
+
 ## Logging
 
 All non-fatal errors and warnings from the PebbleKit library are logged using the
