@@ -1,7 +1,6 @@
 package io.rebble.pebblekit2.common.model
 
 import android.os.Bundle
-import androidx.core.os.bundleOf
 import co.touchlab.kermit.Logger
 
 public sealed class ReceiveResult {
@@ -24,6 +23,7 @@ public sealed class ReceiveResult {
             return when (type) {
                 "ACK" -> ReceiveResult.Ack
                 "NACK" -> ReceiveResult.Nack
+                "UNKNOWN" -> ReceiveResult.Unknown(bundle.getString(BUNDLE_KEY_MESSAGE))
                 else -> {
                     Logger.withTag("PebbleKit")
                         .e { "Got unknown type ${type ?: "null"} while decoding ReceiveResult" }
@@ -36,15 +36,20 @@ public sealed class ReceiveResult {
 }
 
 public fun ReceiveResult.toBundle(): Bundle {
+    val bundle = Bundle()
+
     val type = when (this) {
         ReceiveResult.Ack -> "ACK"
         ReceiveResult.Nack -> "NACK"
-        is ReceiveResult.Unknown -> "UNKNOWN"
+        is ReceiveResult.Unknown -> {
+            bundle.putString(BUNDLE_KEY_MESSAGE, message)
+            "UNKNOWN"
+        }
     }
 
-    return bundleOf(
-        BUNDLE_KEY_TYPE to type,
-    )
+    bundle.putString(BUNDLE_KEY_TYPE, type)
+    return bundle
 }
 
 private const val BUNDLE_KEY_TYPE = "TYPE"
+private const val BUNDLE_KEY_MESSAGE = "MESSAGE"

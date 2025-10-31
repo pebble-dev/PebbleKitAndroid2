@@ -1,7 +1,6 @@
 package io.rebble.pebblekit2.common.model
 
 import android.os.Bundle
-import androidx.core.os.bundleOf
 import co.touchlab.kermit.Logger
 
 public sealed class TransmissionResult {
@@ -57,6 +56,7 @@ public sealed class TransmissionResult {
                 "FAILED_WATCH_NACKED" -> TransmissionResult.FailedWatchNacked
                 "FAILED_WATCH_NOT_CONNECTED" -> TransmissionResult.FailedWatchNotConnected
                 "SUCCESS" -> TransmissionResult.Success
+                "UNKNOWN" -> TransmissionResult.Unknown(bundle.getString(BUNDLE_KEY_MESSAGE))
                 else -> {
                     Logger.withTag("PebbleKit")
                         .e { "Got unknown type ${type ?: "null"} while decoding TransmissionResult" }
@@ -69,6 +69,8 @@ public sealed class TransmissionResult {
 }
 
 public fun TransmissionResult.toBundle(): Bundle {
+    val bundle = Bundle()
+
     val type = when (this) {
         is TransmissionResult.FailedDifferentAppOpen -> "FAILED_DIFFERENT_APP_OPEN"
         is TransmissionResult.FailedNoPermissions -> "FAILED_NO_PERMISSIONS"
@@ -76,12 +78,15 @@ public fun TransmissionResult.toBundle(): Bundle {
         is TransmissionResult.FailedWatchNacked -> "FAILED_WATCH_NACKED"
         is TransmissionResult.FailedWatchNotConnected -> "FAILED_WATCH_NOT_CONNECTED"
         is TransmissionResult.Success -> "SUCCESS"
-        is TransmissionResult.Unknown -> "UNKNOWN"
+        is TransmissionResult.Unknown -> {
+            bundle.putString(BUNDLE_KEY_MESSAGE, message)
+            "UNKNOWN"
+        }
     }
 
-    return bundleOf(
-        BUNDLE_KEY_TYPE to type,
-    )
+    bundle.putString(BUNDLE_KEY_TYPE, type)
+    return bundle
 }
 
 private const val BUNDLE_KEY_TYPE = "TYPE"
+private const val BUNDLE_KEY_MESSAGE = "MESSAGE"
