@@ -163,6 +163,7 @@ Then you can use the `PebbleInfoRetriever` to get the data`:
 val infoRetriever = PebbleInfoRetriever(this)
 
 infoRetriever.getConnectedWatches()
+infoRetriever.getActiveApp(watchId)
 ```
 
 Alternatively, you can also use the content resolver directly:

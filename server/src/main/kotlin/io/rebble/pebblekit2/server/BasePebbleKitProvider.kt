@@ -1,17 +1,22 @@
 package io.rebble.pebblekit2.server
 
 import android.content.ContentProvider
+import android.content.ContentResolver
 import android.content.ContentValues
 import android.database.Cursor
 import android.database.MatrixCursor
 import android.net.Uri
 import androidx.annotation.CallSuper
 import io.rebble.pebblekit2.PebbleKitProviderContract
+import io.rebble.pebblekit2.common.model.WatchIdentifier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CountDownLatch
 
 /**
@@ -29,22 +34,56 @@ public abstract class BasePebbleKitProvider : ContentProvider() {
     @Volatile
     private var connectedWatchesState: List<Map<String, Any?>> = emptyList()
 
+    private val activeApps = ConcurrentHashMap<WatchIdentifier, Map<String, Any?>>()
+
     /**
      * Initializer. This method must be called exactly once, after your application has initialized. All callbacks
      * in this class will only be called after initialization
      */
     @CallSuper
     public open fun initialize() {
+        val contentResolver = requireNotNull(context).contentResolver
+        val packageName = requireNotNull(context).packageName
+
         coroutineScope.launch {
             getConnectedWatches()
                 .distinctUntilChanged()
-                .collect {
-                    connectedWatchesState = it
+                .collectLatest { connectedWatches ->
+                    connectedWatchesState = connectedWatches
 
-                    requireNotNull(context).contentResolver.notifyChange(
-                        PebbleKitProviderContract.ConnectedWatch.getContentUri(requireNotNull(context).packageName),
+                    contentResolver.notifyChange(
+                        PebbleKitProviderContract.ConnectedWatch.getContentUri(packageName),
                         null
                     )
+
+                    val connectedWatchIds =
+                        connectedWatches.map {
+                            WatchIdentifier(
+                                it.getValue(PebbleKitProviderContract.ConnectedWatch.ID)!! as String
+                            )
+                        }
+
+                    removeActiveAppsForDisconnectedWatches(connectedWatchIds, contentResolver, packageName)
+
+                    coroutineScope {
+                        for (watchId in connectedWatchIds) {
+                            getActiveApp((watchId))
+                                .collect { newValue ->
+                                    val newValueNotNull = newValue.orEmpty()
+
+                                    val oldValue = activeApps.put(watchId, newValueNotNull).orEmpty()
+                                    if (oldValue != newValueNotNull) {
+                                        contentResolver.notifyChange(
+                                            PebbleKitProviderContract.ActiveApp.getContentUri(
+                                                packageName,
+                                                watchId
+                                            ),
+                                            null
+                                        )
+                                    }
+                                }
+                        }
+                    }
                 }
         }
 
@@ -58,6 +97,14 @@ public abstract class BasePebbleKitProvider : ContentProvider() {
      * listed in the [PebbleKitProviderContract.ConnectedWatch].
      */
     protected abstract fun getConnectedWatches(): Flow<List<Map<String, Any?>>>
+
+    /**
+     * Get the flow of the active app on the specified watch.
+     *
+     * It must contain map  that contain mappings of all columns,
+     * listed in the [PebbleKitProviderContract.ActiveApp], or null if app is unknown or watch not connected.
+     */
+    protected abstract fun getActiveApp(watch: WatchIdentifier): Flow<Map<String, Any?>?>
 
     override fun onCreate(): Boolean {
         // Do not initialize anything here as this gets called before Application.onCreate, so the server app likely
@@ -79,10 +126,19 @@ public abstract class BasePebbleKitProvider : ContentProvider() {
 
         initializedLatch.await()
 
-        return if (uri.path?.removePrefix("/") == PebbleKitProviderContract.ConnectedWatch.CONTENT_PATH) {
-            queryConnectedWatches(projection)
-        } else {
-            null
+        return when (uri.pathSegments.firstOrNull()) {
+            PebbleKitProviderContract.ConnectedWatch.CONTENT_PATH -> {
+                queryConnectedWatches(projection)
+            }
+
+            PebbleKitProviderContract.ActiveApp.CONTENT_PATH -> {
+                val watchId = uri.pathSegments.elementAtOrNull(1) ?: return null
+                queryActiveApp(projection, watchId)
+            }
+
+            else -> {
+                null
+            }
         }
     }
 
@@ -104,6 +160,51 @@ public abstract class BasePebbleKitProvider : ContentProvider() {
         }
 
         return cursor
+    }
+
+    private fun queryActiveApp(projection: Array<out String?>?, watchId: String): Cursor {
+        val sentColumns =
+            projection?.filterNotNull()?.filter { column ->
+                PebbleKitProviderContract.ActiveApp.ALL_COLUMNS.contains(column)
+            }
+                ?: PebbleKitProviderContract.ActiveApp.ALL_COLUMNS
+
+        val cursor = MatrixCursor(sentColumns.toTypedArray())
+
+        cursor.use { _ ->
+            val appMap = activeApps[WatchIdentifier(watchId)]?.takeIf { it.isNotEmpty() }
+
+            if (appMap != null) {
+                val values = sentColumns.map { appMap.getValue(it) }.toTypedArray()
+                cursor.addRow(values)
+            }
+        }
+
+        return cursor
+    }
+
+    private fun removeActiveAppsForDisconnectedWatches(
+        connectedWatchIds: List<WatchIdentifier>,
+        contentResolver: ContentResolver,
+        packageName: String,
+    ) {
+        val iterator = activeApps.entries.iterator()
+        while (iterator.hasNext()) {
+            val (id, entry) = iterator.next()
+            if (!connectedWatchIds.contains(id) == true) {
+                iterator.remove()
+
+                if (entry.isNotEmpty()) {
+                    contentResolver.notifyChange(
+                        PebbleKitProviderContract.ActiveApp.getContentUri(
+                            packageName,
+                            id
+                        ),
+                        null
+                    )
+                }
+            }
+        }
     }
 
     override fun delete(

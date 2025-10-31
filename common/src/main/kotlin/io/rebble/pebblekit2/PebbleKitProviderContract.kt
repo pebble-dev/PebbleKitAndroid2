@@ -2,6 +2,9 @@ package io.rebble.pebblekit2
 
 import android.content.ContentResolver
 import android.net.Uri
+import io.rebble.pebblekit2.PebbleKitProviderContract.ActiveApp.TYPE_VALUE_UNKNOWN
+import io.rebble.pebblekit2.PebbleKitProviderContract.ActiveApp.TYPE_VALUE_WATCHAPP
+import io.rebble.pebblekit2.PebbleKitProviderContract.ActiveApp.TYPE_VALUE_WATCHFACE
 import io.rebble.pebblekit2.common.model.WatchIdentifier
 
 /**
@@ -111,6 +114,57 @@ public object PebbleKitProviderContract {
          */
         public fun getContentUri(packageName: String): Uri {
             return Uri.withAppendedPath(getAuthorityUri(packageName), CONTENT_PATH)
+        }
+    }
+
+    /**
+     * Constants for the active app table, which returns at most a single row of data that corresponds
+     * to the current active app on the specified watch
+     * (or an empty cursor if the active app is unknown or this watch is not connected)
+     */
+    public object ActiveApp {
+        /**
+         * UUID of the app.
+         *
+         * Column type: String
+         */
+        public const val ID: String = "ID"
+
+        /**
+         * Name of the app (can be null if unknown)
+         *
+         * Column type: String
+         */
+        public const val NAME: String = "NAME"
+
+        /**
+         * The type of the app
+         *
+         * Column type: Int (either [TYPE_VALUE_WATCHFACE], [TYPE_VALUE_WATCHAPP] or [TYPE_VALUE_UNKNOWN])
+         */
+        public const val TYPE: String = "TYPE"
+        public const val TYPE_VALUE_WATCHFACE: Int = 0
+        public const val TYPE_VALUE_WATCHAPP: Int = 1
+        public const val TYPE_VALUE_UNKNOWN: Int = 2
+
+        public val ALL_COLUMNS: List<String> = listOf(
+            ID,
+            NAME,
+            TYPE
+        )
+
+        /**
+         * Path suffix to access this table
+         */
+        public const val CONTENT_PATH: String = "activeApp"
+
+        /**
+         * The content:// style URI for this table
+         */
+        public fun getContentUri(packageName: String, watch: WatchIdentifier): Uri {
+            val baseUri = Uri.withAppendedPath(getAuthorityUri(packageName), CONTENT_PATH)
+
+            return Uri.withAppendedPath(baseUri, watch.value)
         }
     }
 }
