@@ -230,15 +230,15 @@ using `PebbleAndroidAppPicker` object.
 
 First, you have to disable automatic selection:
 
-`DefaultPebbleAndroidAppPicker.enableAutoSelect = false`
+`DefaultPebbleAndroidAppPicker.getInstance(context).enableAutoSelect = false`
 
 Then, you can get a list of all installed Pebble apps:
 
-`val apps = DefaultPebbleAndroidAppPicker.getAllEligibleApps(context)`
+`val apps = DefaultPebbleAndroidAppPicker.getInstance(context).getAllEligibleApps()`
 
 finally, select the app that you want to grant access to:
 
-`DefaultPebbleAndroidAppPicker.selectApp(pebbleAppPackage, context)`
+`DefaultPebbleAndroidAppPicker.getInstance(context).selectApp(pebbleAppPackage)`
 
 Now, PebbleKit will only talk to the app with the `pebbleAppPackage` package.
 
