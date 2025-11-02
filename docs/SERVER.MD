@@ -19,7 +19,7 @@ includeBuild("PebbleKitAndroid2") {
 }
 ```
 
-3. Add dependency in your app's `build.gradle(.kts)`: `implementation("io.rebble:pebblekit2-server:0.0.0")`
+3. Add dependency in your app's `build.gradle(.kts)`: `implementation("io.rebble.pebblekit2:server:0.0.0")`
 
 # Receiving data from apps
 

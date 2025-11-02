@@ -29,7 +29,7 @@ includeBuild("PebbleKitAndroid2") {
 }
 ```
 
-3. Add dependency in your app's `build.gradle(.kts)`: `implementation("io.rebble:pebblekit2:0.0.0")`
+3. Add dependency in your app's `build.gradle(.kts)`: `implementation("io.rebble.pebblekit2:client:0.0.0")`
 
 ### Reference your app in the watchapp
 
