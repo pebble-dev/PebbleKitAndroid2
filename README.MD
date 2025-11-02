@@ -190,6 +190,35 @@ cursor?.use { cursor ->
 
 (Note that only the `projection` parameter is supported, other content resolver parameters are ignored)
 
+### Reacting to the status about the Pebble watch in the background
+
+`PebbleInfoRetriever` works only when the app is in the foreground. Unless your app has a service active all the time,
+it will not be able to react to the changes in the background (for example,
+to get a callback when a watch is (dis)connected while your app is in the background).
+
+To do that, you can use Content URI monitoring in
+the [JobScheduler](https://developer.android.com/reference/android/app/job/JobInfo.Builder#addTriggerContentUri(android.app.job.JobInfo.TriggerContentUri))
+or in
+the [WorkManager](https://developer.android.com/reference/androidx/work/Constraints.Builder#addContentUriTrigger(android.net.Uri,kotlin.Boolean)).
+
+For example:
+
+```kotlin
+val pebbleAppPackageName = DefaultPebbleAndroidAppPicker.getInstance(context)
+    .getCurrentlySelectedApp()
+
+val triggerUri = PebbleKitProviderContract.ConnectedWatch.getContentUri(pebbleAppPackageName)
+
+jobScheduler.schedule(
+    JobInfo.Builder(myId, ComponentName(context, MyJobService::class.java))
+        .addTriggerContentUri(JobInfo.TriggerContentUri(triggerUri, 0))
+        .build()
+)
+```
+
+above job will be triggered whenever a list of currently connected watches change, even if your app is sleeping in the
+background at that time.
+
 ### Selecting target Pebble app
 
 By default, this library will auto-connect and auto-accept requests from any Pebble app.

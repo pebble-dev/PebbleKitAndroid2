@@ -4,6 +4,7 @@
 
     <uses-permission android:name="io.rebble.pebblekit2.permission.SEND_DATA_TO_WATCH"/>
     <uses-permission android:name="io.rebble.pebblekit2.permission.READ_PROVIDER"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
     <application
             android:allowBackup="true"
@@ -31,6 +32,9 @@
                 <action android:name="io.rebble.pebblekit2.RECEIVE_DATA_FROM_WATCH"/>
             </intent-filter>
         </service>
+
+        <service android:name=".NotifyJobService" android:exported="true"
+                 android:permission="android.permission.BIND_JOB_SERVICE"/>
     </application>
 
 </manifest>
