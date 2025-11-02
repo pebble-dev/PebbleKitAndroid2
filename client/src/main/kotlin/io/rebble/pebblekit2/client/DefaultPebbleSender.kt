@@ -10,10 +10,10 @@ import io.rebble.pebblekit2.common.UniversalRequestResponse
 import io.rebble.pebblekit2.common.model.PebbleDictionary
 import io.rebble.pebblekit2.common.model.TransmissionResult
 import io.rebble.pebblekit2.common.model.WatchIdentifier
+import io.rebble.pebblekit2.common.model.fromBundle
 import io.rebble.pebblekit2.common.model.toBundle
 import io.rebble.pebblekit2.common.util.SuspendingBindingConnection
 import io.rebble.pebblekit2.common.util.request
-import java.lang.AutoCloseable
 import java.util.UUID
 
 /**
@@ -21,11 +21,11 @@ import java.util.UUID
  *
  * [close] should be called after you are done using the class.
  */
-public class PebbleSender(context: Context) : AutoCloseable {
+public class DefaultPebbleSender(context: Context) : PebbleSender {
     private val connector = SuspendingBindingConnection<UniversalRequestResponse>(
         context,
         {
-            val targetPkg = PebbleAndroidAppPicker.getCurrentlySelectedApp(context)
+            val targetPkg = DefaultPebbleAndroidAppPicker.getInstance(context).getCurrentlySelectedApp()
                 ?: return@SuspendingBindingConnection null
             Intent(PebbleKitIntents.SEND_DATA).setPackage(targetPkg)
         },
@@ -47,10 +47,10 @@ public class PebbleSender(context: Context) : AutoCloseable {
      * Return value is null if Pebble app is not reachable
      * (for example if not installed or limited by the [PebbleAndroidAppPicker])
      */
-    public suspend fun sendDataToPebble(
+    override suspend fun sendDataToPebble(
         watchappUUID: UUID,
         data: PebbleDictionary,
-        watches: List<WatchIdentifier>? = null,
+        watches: List<WatchIdentifier>?,
     ): Map<WatchIdentifier, TransmissionResult>? {
         return sendRequestForWatches(
             bundleOf(
@@ -76,9 +76,9 @@ public class PebbleSender(context: Context) : AutoCloseable {
      * Return value is null if Pebble app is not reachable
      * (for example if not installed or limited by the [PebbleAndroidAppPicker])
      */
-    public suspend fun startAppOnTheWatch(
+    override suspend fun startAppOnTheWatch(
         watchappUUID: UUID,
-        watches: List<WatchIdentifier>? = null,
+        watches: List<WatchIdentifier>?,
     ): Map<WatchIdentifier, TransmissionResult>? {
         return sendRequestForWatches(
             bundleOf(
@@ -103,9 +103,9 @@ public class PebbleSender(context: Context) : AutoCloseable {
      * Return value is null if Pebble app is not reachable
      * (for example if not installed or limited by the [PebbleAndroidAppPicker])
      */
-    public suspend fun stopAppOnTheWatch(
+    override suspend fun stopAppOnTheWatch(
         watchappUUID: UUID,
-        watches: List<WatchIdentifier>? = null,
+        watches: List<WatchIdentifier>?,
     ): Map<WatchIdentifier, TransmissionResult>? {
         return sendRequestForWatches(
             bundleOf(

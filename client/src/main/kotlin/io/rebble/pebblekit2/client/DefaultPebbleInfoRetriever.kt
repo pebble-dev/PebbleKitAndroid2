@@ -27,7 +27,7 @@ import java.util.UUID
 /**
  * Helper class that receives data from the [PebbleKitProviderContract] and maps it into objects
  */
-public class PebbleInfoRetriever(private val context: Context) {
+public class DefaultPebbleInfoRetriever(private val context: Context) : PebbleInfoRetriever {
     /**
      * Get a flow of currently connected watches. Flow will re-emit when watches change.
      *
@@ -37,7 +37,7 @@ public class PebbleInfoRetriever(private val context: Context) {
      */
     @WorkerThread
     @Suppress("MagicNumber") // Array indices
-    public fun getConnectedWatches(): Flow<List<ConnectedWatch>> {
+    override fun getConnectedWatches(): Flow<List<ConnectedWatch>> {
         return queryPebbleProvider(
             getUri = { PebbleKitProviderContract.ConnectedWatch.getContentUri(it) },
             projection = PebbleKitProviderContract.ConnectedWatch.ALL_COLUMNS,
@@ -65,7 +65,7 @@ public class PebbleInfoRetriever(private val context: Context) {
      */
     @WorkerThread
     @Suppress("MagicNumber") // Array indices
-    public fun getActiveApp(watch: WatchIdentifier): Flow<Watchapp?> {
+    override fun getActiveApp(watch: WatchIdentifier): Flow<Watchapp?> {
         return queryPebbleProvider(
             getUri = { ActiveApp.getContentUri(it, watch) },
             projection = ActiveApp.ALL_COLUMNS,
@@ -89,7 +89,7 @@ public class PebbleInfoRetriever(private val context: Context) {
         mapper: (Cursor) -> T,
     ): Flow<List<T>> {
         return suspend {
-            PebbleAndroidAppPicker.getCurrentlySelectedApp(context)
+            DefaultPebbleAndroidAppPicker.getInstance(context).getCurrentlySelectedApp()
         }.asFlow().flatMapConcat { pebbleAppPackage ->
             if (pebbleAppPackage == null) {
                 flowOf(emptyList())

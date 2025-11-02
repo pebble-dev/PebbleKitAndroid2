@@ -1,6 +1,7 @@
 [versions]
 androidGradleCacheFix = "3.0.2"
 androidGradlePlugin = "8.13.0"
+androidx-annotation = "1.9.1"
 androidx-core = "1.17.0"
 androidx-datastore = "1.1.7"
 dependencyAnalysis = "3.0.4"
@@ -17,6 +18,7 @@ versionCatalogUpdate = "1.0.1"
 # Dummy entry, we don't need to actually use the stdlib explicitly, but it is used for the version checker to auto update kotlin
 android-agp = { module = "com.android.tools.build:gradle", version.ref = "androidGradlePlugin" }
 androidGradleCacheFix = { module = "org.gradle.android.cache-fix:org.gradle.android.cache-fix.gradle.plugin", version.ref = "androidGradleCacheFix" }
+androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "androidx-annotation" }
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "androidx-datastore" }
 dependencyAnalysis = { module = "com.autonomousapps:dependency-analysis-gradle-plugin", version.ref = "dependencyAnalysis" }

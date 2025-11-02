@@ -11,6 +11,7 @@ import io.rebble.pebblekit2.common.model.PebbleDictionary
 import io.rebble.pebblekit2.common.model.PebbleDictionaryItem
 import io.rebble.pebblekit2.common.model.TransmissionResult
 import io.rebble.pebblekit2.common.model.WatchIdentifier
+import io.rebble.pebblekit2.common.model.mapFromBundle
 import io.rebble.pebblekit2.common.model.toBundle
 import io.rebble.pebblekit2.common.util.UniversalRequestResponseSuspending
 import kotlinx.coroutines.CoroutineScope

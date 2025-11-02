@@ -8,8 +8,6 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStoreFile
-import io.rebble.pebblekit2.client.PebbleAndroidAppPicker.enableAutoSelect
-import io.rebble.pebblekit2.client.PebbleAndroidAppPicker.selectApp
 import io.rebble.pebblekit2.common.PebbleKitIntents
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,8 +20,8 @@ import kotlinx.coroutines.flow.first
  * sensitive data over PebbleKit, a malicious app could pretend to be a Pebble Mobile app to extract information from
  * your app. In this case, set [enableAutoSelect] to false and manually call [selectApp], perhaps after user's selection.
  */
-public object PebbleAndroidAppPicker {
-    public var enableAutoSelect: Boolean = true
+public class DefaultPebbleAndroidAppPicker private constructor(private val context: Context) : PebbleAndroidAppPicker {
+    override var enableAutoSelect: Boolean = true
 
     private var preferences: DataStore<Preferences>? = null
 
@@ -33,8 +31,8 @@ public object PebbleAndroidAppPicker {
      *
      * If [enableAutoSelect] is true, this method only returns *null* if there are no mobile Pebble apps installed.
      */
-    public suspend fun getCurrentlySelectedApp(context: Context): String? {
-        val allEligibleApps = getAllEligibleApps(context)
+    override suspend fun getCurrentlySelectedApp(): String? {
+        val allEligibleApps = getAllEligibleApps()
         if (allEligibleApps.isEmpty()) return null
 
         val currentlySelectedValue = createOrGetDataStore(context).data.first()[SELECTED_APP_KEY]
@@ -50,8 +48,8 @@ public object PebbleAndroidAppPicker {
     /**
      * Set currently selected Pebble app. You can specify null to clear the selection.
      */
-    public suspend fun selectApp(packageName: String?, context: Context) {
-        require(packageName == null || getAllEligibleApps(context).contains(packageName)) {
+    override suspend fun selectApp(packageName: String?) {
+        require(packageName == null || getAllEligibleApps().contains(packageName)) {
             "Package ${packageName ?: "null"} is not a mobile Pebble app"
         }
 
@@ -67,7 +65,7 @@ public object PebbleAndroidAppPicker {
     /**
      * @return list of packages of all mobile Pebble apps currently installed.
      */
-    public fun getAllEligibleApps(context: Context): List<String> {
+    override fun getAllEligibleApps(): List<String> {
         return context.packageManager.queryIntentServices(Intent(PebbleKitIntents.SEND_DATA), 0)
             .map { it.serviceInfo.packageName }
             .distinct()
@@ -85,6 +83,22 @@ public object PebbleAndroidAppPicker {
             this.preferences = newInstance
 
             newInstance
+        }
+    }
+
+    public companion object {
+        private var instance: PebbleAndroidAppPicker? = null
+
+        public fun getInstance(context: Context): PebbleAndroidAppPicker {
+            instance?.let { return it }
+
+            synchronized(this) {
+                instance?.let { return it }
+
+                val newInstance = DefaultPebbleAndroidAppPicker(context.applicationContext)
+                instance = newInstance
+                return newInstance
+            }
         }
     }
 }

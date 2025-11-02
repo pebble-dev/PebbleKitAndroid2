@@ -11,6 +11,7 @@ import io.rebble.pebblekit2.common.model.PebbleDictionary
 import io.rebble.pebblekit2.common.model.PebbleDictionaryItem
 import io.rebble.pebblekit2.common.model.ReceiveResult
 import io.rebble.pebblekit2.common.model.WatchIdentifier
+import io.rebble.pebblekit2.common.model.mapFromBundle
 import io.rebble.pebblekit2.common.model.toBundle
 import io.rebble.pebblekit2.common.util.UniversalRequestResponseSuspending
 import kotlinx.coroutines.CoroutineScope
@@ -64,7 +65,8 @@ public abstract class BasePebbleListenerService : Service() {
 
     private inner class Binder : UniversalRequestResponseSuspending(this, coroutineScope) {
         override suspend fun request(data: Bundle, callingPackage: String?): Bundle {
-            val selectedApp = PebbleAndroidAppPicker.getCurrentlySelectedApp(this@BasePebbleListenerService)
+            val selectedApp = DefaultPebbleAndroidAppPicker.getInstance(this@BasePebbleListenerService)
+                .getCurrentlySelectedApp()
 
             if (selectedApp != callingPackage) {
                 LOGGER.w {

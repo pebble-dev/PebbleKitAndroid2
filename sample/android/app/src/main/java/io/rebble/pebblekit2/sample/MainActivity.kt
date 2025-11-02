@@ -20,8 +20,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import io.rebble.pebblekit2.PebbleKitProviderContract
+import io.rebble.pebblekit2.client.DefaultPebbleSender
 import io.rebble.pebblekit2.client.PebbleAndroidAppPicker
-import io.rebble.pebblekit2.client.PebbleInfoRetriever
+import io.rebble.pebblekit2.client.DefaultPebbleInfoRetriever
 import io.rebble.pebblekit2.client.PebbleSender
 import io.rebble.pebblekit2.common.model.PebbleDictionaryItem
 import io.rebble.pebblekit2.sample.ui.theme.PebbleKitSampleTheme
@@ -33,7 +34,7 @@ import java.time.LocalTime
 import java.util.UUID
 
 class MainActivity : ComponentActivity() {
-    private val sender = PebbleSender(this)
+    private val sender = DefaultPebbleSender(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,7 +81,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun startGettingConnectedWatchesInForeground() {
-        val infoRetriever = PebbleInfoRetriever(this)
+        val infoRetriever = DefaultPebbleInfoRetriever(this)
 
         lifecycleScope.launch {
             infoRetriever.getConnectedWatches()

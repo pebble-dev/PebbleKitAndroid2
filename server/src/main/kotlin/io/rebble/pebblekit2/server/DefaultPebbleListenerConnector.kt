@@ -10,10 +10,10 @@ import io.rebble.pebblekit2.common.UniversalRequestResponse
 import io.rebble.pebblekit2.common.model.PebbleDictionary
 import io.rebble.pebblekit2.common.model.ReceiveResult
 import io.rebble.pebblekit2.common.model.WatchIdentifier
+import io.rebble.pebblekit2.common.model.fromBundle
 import io.rebble.pebblekit2.common.model.toBundle
 import io.rebble.pebblekit2.common.util.SuspendingBindingConnection
 import io.rebble.pebblekit2.common.util.request
-import java.lang.AutoCloseable
 import java.util.UUID
 
 /**
@@ -21,7 +21,10 @@ import java.util.UUID
  *
  * [close] should be called after you are done using the class (when the app that started the listener is not active anymore).
  */
-public class PebbleListenerConnector(context: Context, private val targetPackages: List<String>) : AutoCloseable {
+public class DefaultPebbleListenerConnector(
+    context: Context,
+    private val targetPackages: List<String>,
+) : PebbleListenerConnector {
     private val connector = SuspendingBindingConnection<UniversalRequestResponse>(
         context,
         {
@@ -41,7 +44,7 @@ public class PebbleListenerConnector(context: Context, private val targetPackage
      *
      * @return null if the target app could not be reached
      */
-    public suspend fun sendOnMessageReceived(
+    override suspend fun sendOnMessageReceived(
         watchappUUID: UUID,
         data: PebbleDictionary,
         watch: WatchIdentifier,
@@ -66,7 +69,7 @@ public class PebbleListenerConnector(context: Context, private val targetPackage
      *
      * @return true if message was delivered successfully
      */
-    public suspend fun sendOnAppOpened(
+    override suspend fun sendOnAppOpened(
         watchappUUID: UUID,
         watch: WatchIdentifier,
     ): Boolean {
@@ -88,7 +91,7 @@ public class PebbleListenerConnector(context: Context, private val targetPackage
      *
      * @return true if message was delivered successfully
      */
-    public suspend fun sendOnAppClosed(
+    override suspend fun sendOnAppClosed(
         watchappUUID: UUID,
         watch: WatchIdentifier,
     ): Boolean {

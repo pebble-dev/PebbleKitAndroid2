@@ -66,7 +66,7 @@ this is a normal permission, so user does not need to confirm it explicitly.
 Now that you have the permissions, create an instance of the `PebbleSender`:
 
 ```kotlin
-val sender = PebbleSender()
+val sender = DefaultPebbleSender()
 ```
 
 then craft your message (
@@ -160,7 +160,7 @@ To access that, you first have to declare a provider read permission in your man
 Then you can use the `PebbleInfoRetriever` to get the data`:
 
 ```kotlin
-val infoRetriever = PebbleInfoRetriever(this)
+val infoRetriever = DefaultPebbleInfoRetriever(this)
 
 infoRetriever.getConnectedWatches()
 infoRetriever.getActiveApp(watchId)
@@ -169,7 +169,7 @@ infoRetriever.getActiveApp(watchId)
 Alternatively, you can also use the content resolver directly:
 
 ```kotlin
-val pebbleAppPackage = PebbleAndroidAppPicker.getCurrentlySelectedApp(context)
+val pebbleAppPackage = DefaultPebbleAndroidAppPicker.getCurrentlySelectedApp(context)
 
 val cursor = contentResolver.query(
     PebbleKitProviderContract.ConnectedWatch.getContentUri(pebbleAppPackage),
@@ -201,15 +201,15 @@ using `PebbleAndroidAppPicker` object.
 
 First, you have to disable automatic selection:
 
-`PebbleAndroidAppPicker.enableAutoSelect = false`
+`DefaultPebbleAndroidAppPicker.enableAutoSelect = false`
 
 Then, you can get a list of all installed Pebble apps:
 
-`val apps = PebbleAndroidAppPicker.getAllEligibleApps(context)`
+`val apps = DefaultPebbleAndroidAppPicker.getAllEligibleApps(context)`
 
 finally, select the app that you want to grant access to:
 
-`PebbleAndroidAppPicker.selectApp(pebbleAppPackage, context)`
+`DefaultPebbleAndroidAppPicker.selectApp(pebbleAppPackage, context)`
 
 Now, PebbleKit will only talk to the app with the `pebbleAppPackage` package.
 

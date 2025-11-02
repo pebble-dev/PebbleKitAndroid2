@@ -67,7 +67,7 @@ with a companion is opened on the watch:
 
 ```kotlin
 // targetPackages = the list of packages in the watchapp's package.json
-private val connector = PebbleListenerConnector(context, targetPackages)
+private val connector = DefaultPebbleListenerConnector(context, targetPackages)
 ```
 
 now you can call the functions for the appropriate callbacks, whenever events from the watch occur.
