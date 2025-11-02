@@ -13,7 +13,7 @@ to include it:
 ```kotlin
 includeBuild("PebbleKitAndroid2") {
     dependencySubstitution {
-        substitute(module("io.rebble:pebblekit2-server"))
+        substitute(module("io.rebble.pebblekit2:server"))
             .using(project(":server"))
     }
 }
