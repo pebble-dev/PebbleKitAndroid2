@@ -254,6 +254,10 @@ LogWriters.
 
 See [SERVER.MD](docs/SERVER.MD).
 
+# Supported Pebble apps
+
+* [microPebble](https://github.com/matejdro/microPebble) (from `1.0.0-alpha33`)
+
 # Technical details
 
 ## IPC between apps
