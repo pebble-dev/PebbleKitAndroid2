@@ -12,7 +12,7 @@ on [this design document](https://docs.google.com/document/d/1BcX7W9HEBays5puwcR
 
 ### Installation
 
-During the experimental phase, library is not yet pushed to the maven central. To useit , you will have to use git
+During the experimental phase, library is not yet pushed to the maven central. To use it, you will have to use git
 submodules
 to include it:
 
@@ -89,7 +89,7 @@ where the APP_UUID is the UUID of the target watchapp. Optionally, if you want t
 `sendDataToPebble method`.
 
 The `result` will contain the result of the sending
-(see [TransmissionResult](common/src/main/kotlin/io/rebble/pebblekit2/common/model/TransmissionResult.kt)).
+(see [TransmissionResult](common-api/src/main/kotlin/io/rebble/pebblekit2/common/model/TransmissionResult.kt)).
 
 `sendDataToPebble()` method is a suspending method and needs to be called from a coroutine. See
 [Kotlin Coroutines](https://kotlinlang.org/docs/coroutines-overview.html) for more info.
@@ -148,7 +148,8 @@ from the phone.
 
 ### Getting status about the Pebble watch
 
-You can also use `PebbleInfoRetriever` to retrieve various infos about the status of the Pebble watch and its connected.
+You can also use `PebbleInfoRetriever` to retrieve various infos about the status of the Pebble watch and its
+connection.
 
 To access that, you first have to declare a provider read permission in your manifest:
 
@@ -256,7 +257,7 @@ See [SERVER.MD](docs/SERVER.MD).
 
 # Supported Pebble apps
 
-* [microPebble](https://github.com/matejdro/microPebble) (from `1.0.0-alpha33`)
+* [microPebble](https://github.com/matejdro/microPebble) (from `1.0.0-alpha35`)
 
 # Technical details
 
