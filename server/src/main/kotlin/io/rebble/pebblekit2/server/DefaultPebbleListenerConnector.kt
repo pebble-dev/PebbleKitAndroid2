@@ -58,7 +58,17 @@ public class DefaultPebbleListenerConnector(
             PebbleKitBundleKeys.KEY_WATCH_ID to watch.value
         )
 
-        val returnBundle = connection.request(bundle) ?: return null
+        val returnBundle = try {
+            connection.request(bundle) ?: return null
+        } catch (e: IllegalArgumentException) {
+            if (e.message?.startsWith("Service not registered") == true) {
+                // If target app is not installed / gets uninstalled mid-connection,
+                // Android will throw IllegalArgumentException
+                return ReceiveResult.Nack
+            } else {
+                throw e
+            }
+        }
         val resultBundle = returnBundle.getBundle(PebbleKitBundleKeys.KEY_RECEIVE_RESULT) ?: Bundle()
 
         return ReceiveResult.fromBundle(resultBundle)
@@ -81,8 +91,18 @@ public class DefaultPebbleListenerConnector(
             PebbleKitBundleKeys.KEY_WATCH_ID to watch.value
         )
 
-        connection.request(bundle)
-        return true
+        return try {
+            connection.request(bundle)
+            true
+        } catch (e: IllegalArgumentException) {
+            if (e.message?.startsWith("Service not registered") == true) {
+                // If target app is not installed / gets uninstalled mid-connection,
+                // Android will throw IllegalArgumentException
+                false
+            } else {
+                throw e
+            }
+        }
     }
 
     /**
@@ -103,8 +123,18 @@ public class DefaultPebbleListenerConnector(
             PebbleKitBundleKeys.KEY_WATCH_ID to watch.value
         )
 
-        connection.request(bundle)
-        return true
+        return try {
+            connection.request(bundle)
+            true
+        } catch (e: IllegalArgumentException) {
+            if (e.message?.startsWith("Service not registered") == true) {
+                // If target app is not installed / gets uninstalled mid-connection,
+                // Android will throw IllegalArgumentException
+                false
+            } else {
+                throw e
+            }
+        }
     }
 
     /**
@@ -113,6 +143,16 @@ public class DefaultPebbleListenerConnector(
      * We recommend you close a few seconds after its watchapps are closed to give the target app some time to clean up.
      */
     override fun close() {
-        connector.close()
+        return try {
+            connector.close()
+        } catch (e: IllegalArgumentException) {
+            if (e.message?.startsWith("Service not registered") == true) {
+                // If target app is not installed / gets uninstalled mid-connection,
+                // Android will throw IllegalArgumentException
+                // Do nothing
+            } else {
+                throw e
+            }
+        }
     }
 }
