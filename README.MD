@@ -12,24 +12,24 @@ on [this design document](https://docs.google.com/document/d/1BcX7W9HEBays5puwcR
 
 ### Installation
 
-During the experimental phase, library is not yet pushed to the maven central. To use it, you will have to use git
-submodules
-to include it:
+During the experimental phase, library is not yet pushed to the maven central. To use it, you will have to use Jitlpack
+to include it.
 
-1. Download the repository using `git submodule add https://github.com/pebble-dev/PebbleKitAndroid2.git`    
-   (If your project does not use git, you can just download this repo and put it into `PebbleKitAndroid2` folder)
-2. Include build in your app's `settings.gradle(.kts)`:
+First add Jitpack to your maven repositories:
 
 ```kotlin
-includeBuild("PebbleKitAndroid2") {
-    dependencySubstitution {
-        substitute(module("io.rebble.pebblekit2:client"))
-            .using(project(":client"))
-    }
+repositories {
+    maven { url = uri("https://jitpack.io") }
 }
 ```
 
-3. Add dependency in your app's `build.gradle(.kts)`: `implementation("io.rebble.pebblekit2:client:0.0.0")`
+Then you can include it like this:
+
+```kotlin
+implementation("com.github.pebble-dev.PebbleKitAndroid2:client:510b3ead6e")
+```
+
+[More detailed instructions](https://jitpack.io/#pebble-dev/PebbleKitAndroid2/client)
 
 ### Reference your app in the watchapp
 

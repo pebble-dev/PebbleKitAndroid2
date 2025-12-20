@@ -2,24 +2,24 @@ This document is for implementing server-side of the PebbleKit2 in a custom Pebb
 
 # Installation
 
-During the experimental phase, library is not yet pushed to the maven central. To useit , you will have to use git
-submodules
-to include it:
+During the experimental phase, library is not yet pushed to the maven central. To use it, you will have to use Jitlpack
+to include it.
 
-1. Download the repository using `git submodule add https://github.com/pebble-dev/PebbleKitAndroid2.git`    
-   (If your project does not use git, you can just download this repo and put it into `PebbleKitAndroid2` folder)
-2. Include build in your app's `settings.gradle(.kts)`:
+First add Jitpack to your maven repositories:
 
 ```kotlin
-includeBuild("PebbleKitAndroid2") {
-    dependencySubstitution {
-        substitute(module("io.rebble.pebblekit2:server"))
-            .using(project(":server"))
-    }
+repositories {
+    maven { url = uri("https://jitpack.io") }
 }
 ```
 
-3. Add dependency in your app's `build.gradle(.kts)`: `implementation("io.rebble.pebblekit2:server:0.0.0")`
+Then you can include it like this:
+
+```kotlin
+implementation("com.github.pebble-dev.PebbleKitAndroid2:server:510b3ead6e")
+```
+
+[More detailed instructions](https://jitpack.io/#pebble-dev/PebbleKitAndroid2/server)
 
 # Receiving data from apps
 

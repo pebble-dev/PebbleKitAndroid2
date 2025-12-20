@@ -16,20 +16,11 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url = uri("https://jitpack.io") }
+
     }
 }
 
 include(":app")
 
 rootProject.name = "PebbleKit2_Sample"
-
-// Include PebbleKit library until
-// it is stable enough to make a release
-includeBuild("../..") {
-    dependencySubstitution {
-        substitute(module("io.rebble:pebblekit2"))
-            .using(project(":client"))
-    }
-}
-
-
