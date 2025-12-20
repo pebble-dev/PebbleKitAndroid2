@@ -12,3 +12,6 @@ inline val PluginDependenciesSpec.pureKotlinModule: PluginDependencySpec
 
 inline val PluginDependenciesSpec.parcelize: PluginDependencySpec
     get() = id("kotlin-parcelize")
+
+inline val PluginDependenciesSpec.publishToMaven: PluginDependencySpec
+    get() = id("published-module")

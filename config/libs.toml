@@ -8,6 +8,7 @@ dependencyAnalysis = "3.0.4"
 detekt = "1.23.8"
 detekt-compilerWarnings = "0.0.4"
 kermit = "2.0.4"
+mavenPublish = "0.35.0"
 kotlin = "2.2.20"
 kotlin-coroutines = "1.10.2"
 kotlinova = "4.0.0-alpha07"
@@ -30,6 +31,7 @@ kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", 
 kotlin-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-plugin-compose = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 kotlinova-gradle = { module = "si.inova.kotlinova:gradle", version.ref = "kotlinova" }
+mavenPublish = { module = "com.vanniktech.maven.publish:com.vanniktech.maven.publish.gradle.plugin", version.ref = "mavenPublish" }
 tomlj = { module = "org.tomlj:tomlj", version.ref = "tomlj" }
 
 [plugins]

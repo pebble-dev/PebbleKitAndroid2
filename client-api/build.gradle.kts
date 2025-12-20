@@ -1,5 +1,6 @@
 plugins {
     pureKotlinModule
+    publishToMaven
 }
 
 dependencies {

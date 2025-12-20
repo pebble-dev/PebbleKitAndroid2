@@ -33,6 +33,7 @@ dependencies {
     implementation(libs.kotlin.plugin)
     implementation(libs.kotlin.plugin.compose)
     implementation(libs.kotlinova.gradle)
+    implementation(libs.mavenPublish)
     implementation(libs.tomlj)
 
     // Workaround to have libs accessible (from https://github.com/gradle/gradle/issues/15383)
