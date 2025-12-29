@@ -16,6 +16,7 @@ public object PebbleKitProviderContract {
     /**
      * The authority for the PebbleKit provider
      */
+    @JvmStatic
     public fun getAuthority(packageName: String): String {
         return "$packageName.pebblekit"
     }
@@ -23,6 +24,7 @@ public object PebbleKitProviderContract {
     /**
      * A content:// style uri to the authority for the PebbleKIt provider
      */
+    @JvmStatic
     public fun getAuthorityUri(packageName: String): Uri {
         return Uri.Builder()
             .scheme(ContentResolver.SCHEME_CONTENT)
@@ -93,6 +95,7 @@ public object PebbleKitProviderContract {
          */
         public const val FIRMWARE_VERSION_TAG: String = "FIRMWARE_VERSION_TAG"
 
+        @JvmStatic
         public val ALL_COLUMNS: List<String> = listOf(
             ID,
             NAME,
@@ -112,6 +115,7 @@ public object PebbleKitProviderContract {
         /**
          * The content:// style URI for this table
          */
+        @JvmStatic
         public fun getContentUri(packageName: String): Uri {
             return Uri.withAppendedPath(getAuthorityUri(packageName), CONTENT_PATH)
         }
@@ -147,6 +151,7 @@ public object PebbleKitProviderContract {
         public const val TYPE_VALUE_WATCHAPP: Int = 1
         public const val TYPE_VALUE_UNKNOWN: Int = 2
 
+        @JvmStatic
         public val ALL_COLUMNS: List<String> = listOf(
             ID,
             NAME,
@@ -161,6 +166,7 @@ public object PebbleKitProviderContract {
         /**
          * The content:// style URI for this table
          */
+        @JvmStatic
         public fun getContentUri(packageName: String, watch: WatchIdentifier): Uri {
             val baseUri = Uri.withAppendedPath(getAuthorityUri(packageName), CONTENT_PATH)
 
