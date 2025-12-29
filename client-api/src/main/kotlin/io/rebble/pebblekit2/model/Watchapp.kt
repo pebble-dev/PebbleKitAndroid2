@@ -5,7 +5,7 @@ import java.util.UUID
 public data class Watchapp(
     val id: UUID,
     val name: String?,
-    val isWatchface: Type,
+    val type: Type,
 ) {
     public enum class Type {
         WATCHFACE,
