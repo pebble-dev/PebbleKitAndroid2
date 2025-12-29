@@ -262,6 +262,7 @@ See [SERVER.MD](docs/SERVER.MD).
 
 # Supported Pebble apps
 
+* [Pebble / Core app](https://github.com/pebble-dev/mobile-app) (from `1.0.7.7`)
 * [microPebble](https://github.com/matejdro/microPebble) (from `1.0.0-alpha35`)
 
 # Technical details
