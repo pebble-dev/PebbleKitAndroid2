@@ -89,6 +89,7 @@ public class DefaultPebbleAndroidAppPicker private constructor(private val conte
     public companion object {
         private var instance: PebbleAndroidAppPicker? = null
 
+        @JvmStatic
         public fun getInstance(context: Context): PebbleAndroidAppPicker {
             instance?.let { return it }
 

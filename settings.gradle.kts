@@ -12,6 +12,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url = uri("https://jitpack.io") }
     }
 
     versionCatalogs {
@@ -28,6 +29,7 @@ rootProject.name = "PebbleKitAndroid2"
 include(":common")
 include(":common-api")
 include(":client")
+include(":client-java")
 include(":client-api")
 include(":server")
 include(":server-api")

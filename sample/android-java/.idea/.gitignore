@@ -1,0 +1,18 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Ignored default folder with query files
+/queries/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+/.name
+/AndroidProjectSystem.xml
+/compiler.xml
+/deploymentTargetSelector.xml
+/deviceManager.xml
+/gradle.xml
+/kotlinc.xml
+/misc.xml
+/runConfigurations.xml
+/vcs.xml
