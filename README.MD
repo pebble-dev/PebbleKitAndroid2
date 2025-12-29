@@ -26,7 +26,7 @@ repositories {
 Then you can include it like this:
 
 ```kotlin
-implementation("com.github.pebble-dev.PebbleKitAndroid2:client:510b3ead6e")
+implementation("com.github.pebble-dev.PebbleKitAndroid2:client:dc47225096")
 ```
 
 [More detailed instructions](https://jitpack.io/#pebble-dev/PebbleKitAndroid2/client)
@@ -242,6 +242,11 @@ finally, select the app that you want to grant access to:
 `DefaultPebbleAndroidAppPicker.getInstance(context).selectApp(pebbleAppPackage)`
 
 Now, PebbleKit will only talk to the app with the `pebbleAppPackage` package.
+
+### Non-Kotlin usage
+
+This library is written primarily with Kotlin use in mind. But we have a wrapper that allows it
+to be used with non-Kotlin JVM languages, such as Java. See [JAVA.MD](docs/JAVA.MD).
 
 ## Logging
 
