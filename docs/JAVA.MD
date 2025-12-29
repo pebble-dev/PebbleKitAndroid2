@@ -13,7 +13,7 @@ Here are described all the differences in Java projects from the regular procedu
 
 ### Sending data
 
-To send data, use `JavaPebbleSender` instead of `Sender`:
+To send data, use the `JavaPebbleSender` instead of the `PebbleSender`:
 
 ```java
 JavaPebbleSender sender = new DefaultJavaPebbleSender(context);
@@ -42,7 +42,7 @@ public class PebbleListenerService extends BaseJavaPebbleListenerService {
     @Override
     public void onMessageReceived(
         @NotNull UUID watchappUUID,
-        @NotNull Map <@NotNull Integer, ? extends @NotNull PebbleDictionaryItem> data,
+        @NotNull Map<@NotNull Integer, ? extends @NotNull PebbleDictionaryItem> data,
         @NotNull String watch,
         @NotNull Consumer<@NotNull ReceiveResult> responder) {
     
@@ -56,7 +56,7 @@ public class PebbleListenerService extends BaseJavaPebbleListenerService {
 
 ### Selecting target Pebble app
 
-Some `PebbleAndroidAppPicker` are not accessible from Java by default. To access them, you can call methods
+Some `PebbleAndroidAppPicker` methods are not accessible from Java by default. To access them, you can call methods
 on the `JavaPebbleAndroidAppPicker` wrapper:
 
 ```java
