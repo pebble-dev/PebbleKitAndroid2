@@ -24,9 +24,8 @@ repositories {
 ```
 
 Then you can include it like this:
-
 ```kotlin
-implementation("com.github.pebble-dev.PebbleKitAndroid2:client:dc47225096")
+implementation("com.github.pebble-dev.PebbleKitAndroid2:client:3dea822ae9")
 ```
 
 [More detailed instructions](https://jitpack.io/#pebble-dev/PebbleKitAndroid2/client)
