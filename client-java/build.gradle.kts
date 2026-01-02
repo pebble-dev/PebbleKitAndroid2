@@ -10,14 +10,11 @@ android {
 }
 
 dependencies {
-    api(projects.common)
     api(projects.commonApi)
     api(projects.client)
     api(projects.clientApi)
 
     implementation(libs.androidx.datastore.preferences)
-    implementation(libs.androidx.core)
-    implementation(libs.kermit)
     implementation(libs.kotlin.coroutines)
 }
 
