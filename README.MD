@@ -120,7 +120,8 @@ with the `io.rebble.pebblekit2.RECEIVE_DATA_FROM_WATCH` intent filter:
 
 ```xml
 <service android:name="package.of.my.PebbleListenerService"
-         android:exported="true">
+         android:exported="true"
+         tools:ignore="ExportedService">
     <intent-filter>
         <action android:name="io.rebble.pebblekit2.RECEIVE_DATA_FROM_WATCH"/>
     </intent-filter>
