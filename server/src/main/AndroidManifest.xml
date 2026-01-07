@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools">
+    <!--
+    Permissions are not used any more due to difficulties when swapping Pebble apps.
+    They are declared here for backwards compatibility.
+    -->
     <permission android:name="io.rebble.pebblekit2.permission.SEND_DATA_TO_WATCH"
                 android:label="@string/permission_label_send"
                 android:protectionLevel="normal"/>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="permission_label_send">Send data to the Pebble watch</string>
-    <string name="permission_label_receive">Receive data from the Pebble watch</string>
-    <string name="permission_label_read_provider">Read status about the Pebble watch</string>
+    <string name="permission_label_send">(Legacy, do not use in new apps) Send data to the Pebble watch</string>
+    <string name="permission_label_receive">(Legacy, do not use in new apps) Receive data from the Pebble watch</string>
+    <string name="permission_label_read_provider">(Legacy, do not use in new apps) Read status about the Pebble watch</string>
 </resources>

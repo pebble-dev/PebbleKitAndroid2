@@ -56,13 +56,7 @@ connect to the first app on the list that is installed on the user's Android dev
 
 ### Sending data
 
-To send data to the watch, you need to first declare a data sending permission in your manifest:
-
-`<uses-permission android:name="io.rebble.pebblekit2.permission.SEND_DATA_TO_WATCH" />`
-
-this is a normal permission, so user does not need to confirm it explicitly.
-
-Now that you have the permissions, create an instance of the `PebbleSender`:
+To send data to the watch, create an instance of the `PebbleSender`:
 
 ```kotlin
 val sender = DefaultPebbleSender()
@@ -126,16 +120,12 @@ with the `io.rebble.pebblekit2.RECEIVE_DATA_FROM_WATCH` intent filter:
 
 ```xml
 <service android:name="package.of.my.PebbleListenerService"
-         android:exported="true"
-         android:permission="io.rebble.pebblekit2.permission.RECEIVE_DATA_FROM_WATCH">
+         android:exported="true">
     <intent-filter>
         <action android:name="io.rebble.pebblekit2.RECEIVE_DATA_FROM_WATCH"/>
     </intent-filter>
 </service>
 ```
-
-Do not forget to declare the permissions, which ensures that only apps with the receiving
-permission can bind and send data to your app.
 
 That's it. When your watchapp is opened on the watch, the listener service should be bounded and the
 start callback called.
@@ -149,13 +139,6 @@ from the phone.
 
 You can also use `PebbleInfoRetriever` to retrieve various infos about the status of the Pebble watch and its
 connection.
-
-To access that, you first have to declare a provider read permission in your manifest:
-
-```xml
-
-<uses-permission android:name="io.rebble.pebblekit2.permission.READ_PROVIDER"/>
-```
 
 Then you can use the `PebbleInfoRetriever` to get the data`:
 

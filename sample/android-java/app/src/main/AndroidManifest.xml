@@ -2,8 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="io.rebble.pebblekit2.permission.SEND_DATA_TO_WATCH"/>
-
     <application
             android:allowBackup="true"
             android:icon="@mipmap/ic_launcher"
@@ -22,8 +20,7 @@
         </activity>
 
         <service android:name=".PebbleListenerService"
-                 android:exported="true"
-                 android:permission="io.rebble.pebblekit2.permission.RECEIVE_DATA_FROM_WATCH">
+                 android:exported="true">
             <intent-filter>
                 <action android:name="io.rebble.pebblekit2.RECEIVE_DATA_FROM_WATCH"/>
             </intent-filter>

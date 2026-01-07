@@ -39,16 +39,12 @@ class PebbleSenderReceiver : BasePebbleSenderReceiver() {
 ```xml
 
 <service android:name="package.of.my.PebbleSenderReceiver" 
-         android:exported="true" 
-         android:permission="io.rebble.pebblekit2.permission.SEND_DATA_TO_WATCH">
+         android:exported="true">
     <intent-filter>
         <action android:name="io.rebble.pebblekit2.SEND_DATA_TO_WATCH"/>
     </intent-filter>
 </service>
 ```
-
-Do not forget to declare the permissions, which ensures that only apps with the sending
-permission can connect to the watch.
 
 3. That's it. Whenever companion app wants to send data to the watch, your `BasePebbleSenderReceiver`
    will be automatically constructed by the Android system and its suspending methods will be called.
@@ -58,11 +54,7 @@ Note: by default, suspending methods are called on the main coroutine scope, but
 
 # Sending data to apps
 
-To send the data from the watch to the companion apps, you first a data reception permission:
-
-`<uses-permission android:name="io.rebble.pebblekit2.permission.RECEIVE_DATA_FROM_WATCH" />`
-
-then you need to create a `PebbleListenerConnector`, when a watchapp
+To send the data from the watch to the companion apps, you need to create a `PebbleListenerConnector`, when a watchapp
 with a companion is opened on the watch:
 
 ```kotlin
@@ -112,8 +104,7 @@ Finally, add the provider to the manifest:
 <provider
     android:authorities="my.app.pebblekit"
     android:name="package.of.my.PebbleKitProvider"
-    android:permission="io.rebble.pebblekit2.permission.READ_PROVIDER"
     android:exported="true" />
 ```
 
-Note that the authority must be `YOUR_APP_PACKAGE.pebblekit`. Do not forget to specify the permission.
+Note that the authority must be `YOUR_APP_PACKAGE.pebblekit`.
