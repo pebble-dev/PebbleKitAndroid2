@@ -25,7 +25,7 @@ repositories {
 
 Then you can include it like this:
 ```kotlin
-implementation("com.github.pebble-dev.PebbleKitAndroid2:client:3dea822ae9")
+implementation("com.github.pebble-dev.PebbleKitAndroid2:client:08f925b77f")
 ```
 
 [More detailed instructions](https://jitpack.io/#pebble-dev/PebbleKitAndroid2/client)
@@ -68,7 +68,7 @@ for more info on the message structure) by creating a map of tuples to send to t
 
 ```kotlin
 val dataToSend = mapOf(
-    1u to PebbleDictionaryItem.String("Hello at ${LocalTime.now().toString()}"),
+    1u to PebbleDictionaryItem.Text("Hello at ${LocalTime.now().toString()}"),
     2u to PebbleDictionaryItem.UInt8(10u),
 )
 ```

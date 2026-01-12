@@ -8,7 +8,7 @@ espressoCore = "3.7.0"
 lifecycleRuntimeKtx = "2.9.4"
 activityCompose = "1.11.0"
 composeBom = "2024.09.00"
-pebblekit = "510b3ead6e"
+pebblekit = "08f925b77f"
 
 
 [libraries]

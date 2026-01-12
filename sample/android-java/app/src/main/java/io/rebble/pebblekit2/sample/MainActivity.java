@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void sendTimeToWatch(View view) {
         Map<Integer, PebbleDictionaryItem> dictionary = new HashMap<>();
-        dictionary.put(1, new PebbleDictionaryItem.String("Hello at " + LocalTime.now()));
+        dictionary.put(1, new PebbleDictionaryItem.Text("Hello at " + LocalTime.now()));
         dictionary.put(2, new PebbleDictionaryItem.UInt16(333));
 
         sender.sendDataToPebble(APP_UUID,

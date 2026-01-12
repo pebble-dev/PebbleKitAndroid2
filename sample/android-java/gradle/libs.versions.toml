@@ -7,7 +7,7 @@ appcompat = "1.7.1"
 material = "1.10.0"
 activity = "1.12.2"
 constraintlayout = "2.2.1"
-pebblekit = "dc47225096"
+pebblekit = "08f925b77f"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }

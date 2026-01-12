@@ -64,7 +64,7 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch {
             val result = sender.sendDataToPebble(
                 APP_UUID,
-                mapOf(1u to PebbleDictionaryItem.String("Hello at ${LocalTime.now()}"))
+                mapOf(1u to PebbleDictionaryItem.Text("Hello at ${LocalTime.now()}"))
             )
 
             Log.d("PebbleKitSample", "Message sent. Result: $result")

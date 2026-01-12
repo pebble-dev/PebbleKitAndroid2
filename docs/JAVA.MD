@@ -19,7 +19,7 @@ To send data, use the `JavaPebbleSender` instead of the `PebbleSender`:
 JavaPebbleSender sender = new DefaultJavaPebbleSender(context);
 
 Map<Integer, PebbleDictionaryItem> dictionary = new HashMap<>();
-dictionary.put(1, new PebbleDictionaryItem.String("Hello, Watch!");
+dictionary.put(1, new PebbleDictionaryItem.Text("Hello, Watch!");
 dictionary.put(2, new PebbleDictionaryItem.UInt16(333));
 
 sender.sendDataToPebble(
