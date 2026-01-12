@@ -11,13 +11,13 @@ public fun PebbleDictionaryItem.Companion.mapFromBundle(bundle: Bundle): PebbleD
         when (type) {
             "ByteArray" -> {
                 bundle.getByteArray(valueKey)?.let {
-                    dictKey to PebbleDictionaryItem.ByteArray(it)
+                    dictKey to PebbleDictionaryItem.Bytes(it)
                 }
             }
 
             "String" -> {
                 bundle.getString(valueKey)?.let {
-                    dictKey to PebbleDictionaryItem.String(it)
+                    dictKey to PebbleDictionaryItem.Text(it)
                 }
             }
 
@@ -59,12 +59,12 @@ public fun PebbleDictionary.toBundle(): Bundle {
         for (entry in entries) {
             val key = entry.key.toString()
             when (val value = entry.value) {
-                is PebbleDictionaryItem.ByteArray -> {
+                is PebbleDictionaryItem.Bytes -> {
                     putString("${key}_TYPE", "ByteArray")
                     putByteArray("${key}_VALUE", value.value)
                 }
 
-                is PebbleDictionaryItem.String -> {
+                is PebbleDictionaryItem.Text -> {
                     putString("${key}_TYPE", "String")
                     putString("${key}_VALUE", value.value)
                 }

@@ -8,10 +8,10 @@ public sealed class PebbleDictionaryItem {
      */
     public abstract val size: Int
 
-    public data class ByteArray(override val value: kotlin.ByteArray) : PebbleDictionaryItem() {
+    public data class Bytes(override val value: kotlin.ByteArray) : PebbleDictionaryItem() {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-            if (other !is ByteArray) return false
+            if (other !is Bytes) return false
 
             if (!value.contentEquals(other.value)) return false
 
@@ -26,7 +26,7 @@ public sealed class PebbleDictionaryItem {
             get() = value.size
     }
 
-    public data class String(override val value: kotlin.String) : PebbleDictionaryItem() {
+    public data class Text(override val value: kotlin.String) : PebbleDictionaryItem() {
         override val size: Int
             get() = value.toByteArray(Charsets.UTF_8).size
     }
