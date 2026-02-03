@@ -25,7 +25,7 @@ repositories {
 
 Then you can include it like this:
 ```kotlin
-implementation("com.github.pebble-dev.PebbleKitAndroid2:client:4acc0485a1")
+implementation("com.github.pebble-dev.PebbleKitAndroid2:client:00f4fd77a7")
 ```
 
 [More detailed instructions](https://jitpack.io/#pebble-dev/PebbleKitAndroid2/client)
@@ -225,6 +225,34 @@ finally, select the app that you want to grant access to:
 `DefaultPebbleAndroidAppPicker.getInstance(context).selectApp(pebbleAppPackage)`
 
 Now, PebbleKit will only talk to the app with the `pebbleAppPackage` package.
+
+#### Permission prompt
+
+To help with the above selection of the target app, out of the box permission prompt Composable is provided. To use, first depend on the `client-ui` module:
+
+`implementation("com.github.pebble-dev.PebbleKitAndroid2:client-ui:...")`
+
+Then you can call the dialog in your Jetpack Compose code:
+
+```kotlin
+if (showDialog) {
+  PebbleAppPermissionDialog(
+      pebbleAndroidAppPicker,
+      onDismiss = {
+        showDialog = false
+      },
+      rationaleText = {
+          Text(..., Modifier.padding(top = 8.dp))
+      }
+  )
+}
+```
+
+The dialog will take care of the `selectApp()` calls for you, when user selects grant/deny.
+
+Example dialog for the app that shows the notifications on the watch:
+
+![image](docs/example-prompt-popup.png)
 
 ### Non-Kotlin usage
 
