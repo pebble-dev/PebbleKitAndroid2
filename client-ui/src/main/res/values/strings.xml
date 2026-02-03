@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pebble_connection_permission_title">Pebble connection permission</string>
+    <string name="no_pebble_app_text">No installed app detected that could be used to connect to the Pebble OS
+        watches.
+    </string>
+    <string name="grant">Grant</string>
+    <string name="deny">Deny</string>
+    <string name="ok">OK</string>
+    <string name="pebble_connection_permission_body_prefix">"Can we communicate to the PebbleOS watch via the "</string>
+    <string name="pebble_connection_permission_body_suffix">" app?"</string>
+</resources>

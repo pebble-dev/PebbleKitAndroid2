@@ -23,6 +23,16 @@ dependencyAnalysis {
         bundle("kermit") {
             includeGroup("co.touchlab")
         }
+
+        bundle("compose") {
+            // Compose libraries are blanket-included to for convenience. It shouldn't cause a big issue
+            includeGroup("androidx.compose.animation")
+            includeGroup("androidx.compose.foundation")
+            includeGroup("androidx.compose.material")
+            includeGroup("androidx.compose.material3")
+            includeGroup("androidx.compose.runtime")
+            includeGroup("androidx.compose.ui")
+        }
     }
 }
 
