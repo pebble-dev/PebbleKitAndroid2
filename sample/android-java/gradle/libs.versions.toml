@@ -7,7 +7,7 @@ appcompat = "1.7.1"
 material = "1.10.0"
 activity = "1.12.2"
 constraintlayout = "2.2.1"
-pebblekit = "08f925b77f"
+pebblekit = "0.1.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -17,7 +17,7 @@ appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "a
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
-pebblekit = { module = "com.github.pebble-dev.PebbleKitAndroid2:client-java", version.ref = "pebblekit" }
+pebblekit = { module = "io.rebble.pebblekit2:client-java", version.ref = "pebblekit" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -11,22 +11,15 @@ on [this design document](https://docs.google.com/document/d/1BcX7W9HEBays5puwcR
 (See [sample app](sample) for examples)
 
 ### Installation
-
-During the experimental phase, library is not yet pushed to the maven central. To use it, you will have to use Jitlpack
-to include it.
-
-First add Jitpack to your maven repositories:
-
-```kotlin
-repositories {
-    maven { url = uri("https://jitpack.io") }
-}
 ```
-
 Then you can include it like this:
 ```kotlin
-implementation("com.github.pebble-dev.PebbleKitAndroid2:client:a90205210d")
+implementation("io.rebble.pebblekit2:client:X.Y.Z")
 ```
+
+Replace `X.Y.Z` with latest version. Check out [releases](https://github.com/pebble-dev/PebbleKitAndroid2/releases) to
+see what is the latest
+version.
 
 [More detailed instructions](https://jitpack.io/#pebble-dev/PebbleKitAndroid2/client)
 
@@ -230,7 +223,7 @@ Now, PebbleKit will only talk to the app with the `pebbleAppPackage` package.
 
 To help with the above selection of the target app, out of the box permission prompt Composable is provided. To use, first depend on the `client-ui` module:
 
-`implementation("com.github.pebble-dev.PebbleKitAndroid2:client-ui:...")`
+`implementation("io.rebble.pebblekit2:client-ui:X.Y.Z")`
 
 Then you can call the dialog in your Jetpack Compose code:
 
