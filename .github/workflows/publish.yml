@@ -1,0 +1,92 @@
+name: publish
+run-name: "Publish"
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build-app:
+    runs-on: "ubuntu-latest"
+    env:
+      BUILD_NUMBER: ${{ github.run_number }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Determine new version
+
+      - name: Collect version prerequisites
+        shell: bash
+        run: |
+          OLD_VERSION=$(cat version.txt)
+          echo "OLD_VERSION=$OLD_VERSION" >> $GITHUB_ENV
+          echo "PREV_VERSION_REF=$(git rev-list -n 1 $OLD_VERSION)" >> $GITHUB_ENV
+      - name: Check if there were any new fix or feature commits
+        id: version-check
+        uses: inovait/actions-common/bump-version@v11
+        with:
+          version: '${{ env.OLD_VERSION }}'
+          from: '${{ env.PREV_VERSION_REF }}'
+          to: 'HEAD'
+          increment: "auto"
+      - run: "echo \"No feature or fix commits. Skipping build...\""
+        if: "${{ steps.version-check.outputs.version == env.OLD_VERSION }}"
+      - uses: andymckay/cancel-action@0.3
+        if: "${{ steps.version-check.outputs.version == env.OLD_VERSION }}"
+      - name: "Wait for cancel to stick"
+        run: "sleep 99999"
+        if: "${{ steps.version-check.outputs.version == env.OLD_VERSION }}"
+      - run: "./config/bump-version.sh ${{ steps.version-check.outputs.version }}"
+      - run: "v=$(cat version.txt);echo \"VERSION=$v\" > $GITHUB_ENV"
+      - run: "echo \"# Release version ${{ env.VERSION }}\" > $GITHUB_STEP_SUMMARY"
+
+      # Build preparations
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: temurin
+          cache: gradle
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@7c5672355aaa8fde5f97a91aa9a99616d1ace6bc
+      - name: Validate Gradle Wrapper
+        uses: gradle/actions/wrapper-validation@ac638b010cf58a27ee6c972d7336334ccaf61c96
+      - name: Compile library
+        run: "./gradlew --parallel assemble"
+      - name: Lint
+        run: "./gradlew --continue --parallel lintDebug detektMain detektTest buildHealth reportMerge detektReleaseUnitTest -x detektRelease --continue"
+      - name: Generate Changelog
+        id: changelog
+        uses: inovait/actions-common/git-changelog-generator@v8
+        with:
+          git_commit_url_prefix: 'https://github.com/pebble-dev/PebbleKitAndroid2/commit/'
+          from: '${{ env.PREV_VERSION_REF }}'
+          to: 'HEAD'
+      - name: 'Publish'
+        run: './gradlew publishToMavenCentral --no-configuration-cache'
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.GPG_SIGNING_ID }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.GPG_SIGNING_PASSPHRASE }}
+      - name: 'Add changelog and version'
+        run: 'git add version.txt'
+      - run: 'git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"'
+      - run: 'git config --global user.name "github-actions[bot]"'
+      - name: 'Commit changelog and version'
+        run: 'git commit -m "chore: release ${{ env.VERSION }}"'
+      - name: 'Push changelog and version'
+        run: 'git push'
+      - name: 'Create tag'
+        run: 'git tag ${{ env.VERSION }}'
+      - name: 'Push tag'
+        run: 'git push origin ${{ env.VERSION }}'
+      - name: Create a Release
+        uses: ncipollo/release-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          name: ${{ env.VERSION }}
+          tag: ${{ env.VERSION }}
+          body: ${{ steps.changelog.outputs.changelog }}

@@ -8,10 +8,11 @@ androidx-compose-runtime = "1.9.2"
 androidx-core = "1.17.0"
 androidx-datastore = "1.1.7"
 dependencyAnalysis = "3.0.4"
+dokka = "2.1.0"
 detekt = "1.23.8"
 detekt-compilerWarnings = "0.0.4"
 kermit = "2.0.4"
-mavenPublish = "0.35.0"
+mavenPublish = "0.36.0"
 kotlin = "2.2.20"
 kotlin-coroutines = "1.10.2"
 kotlinova = "4.0.0-alpha07"
@@ -33,6 +34,7 @@ dependencyAnalysis = { module = "com.autonomousapps:dependency-analysis-gradle-p
 detekt-compilerWarnings = { module = "com.braisgabin.detekt:kotlin-compiler-wrapper", version.ref = "detekt-compilerWarnings" }
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 detekt-plugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+dokka = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlin-coroutines" }
 kotlin-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }

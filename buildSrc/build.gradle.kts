@@ -30,6 +30,7 @@ dependencies {
     implementation(libs.android.agp)
     implementation(libs.detekt.plugin)
     implementation(libs.dependencyAnalysis)
+    implementation(libs.dokka)
     implementation(libs.kotlin.plugin)
     implementation(libs.kotlinova.gradle)
     implementation(libs.mavenPublish)
