@@ -11,8 +11,7 @@ on [this design document](https://docs.google.com/document/d/1BcX7W9HEBays5puwcR
 (See [sample app](sample) for examples)
 
 ### Installation
-```
-Then you can include it like this:
+
 ```kotlin
 implementation("io.rebble.pebblekit2:client:X.Y.Z")
 ```
