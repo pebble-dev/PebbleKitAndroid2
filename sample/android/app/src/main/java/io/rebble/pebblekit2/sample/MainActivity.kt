@@ -62,6 +62,7 @@ class MainActivity : ComponentActivity() {
 
     private fun sendTimeToWatch() {
         lifecycleScope.launch {
+            println("sending start")
             val result = sender.sendDataToPebble(
                 APP_UUID,
                 mapOf(1u to PebbleDictionaryItem.Text("Hello at ${LocalTime.now()}"))

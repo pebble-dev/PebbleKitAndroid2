@@ -1,8 +1,4 @@
-A work-in-progress implementation of the new modern PebbleKit API for communication between phone companion apps and
-the watchapps on the Pebble-OS running watches.
-
-Based
-on [this design document](https://docs.google.com/document/d/1BcX7W9HEBays5puwcRQh1GzClyHc014IRzEIuk7lLuk/edit?tab=t.0).
+PebbleKit Android (2) is a Kotlin library that allows an Android application to find and exchange data with a Pebble app.
 
 # Usage
 
@@ -19,8 +15,6 @@ implementation("io.rebble.pebblekit2:client:X.Y.Z")
 Replace `X.Y.Z` with latest version. Check out [releases](https://github.com/pebble-dev/PebbleKitAndroid2/releases) to
 see what is the latest
 version.
-
-[More detailed instructions](https://jitpack.io/#pebble-dev/PebbleKitAndroid2/client)
 
 ### Reference your app in the watchapp
 
