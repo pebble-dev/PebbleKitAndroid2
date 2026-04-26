@@ -4,7 +4,7 @@ PebbleKit Android (2) is a Kotlin library that allows an Android application to 
 
 ## Client-side (app) usage
 
-(See [sample app](sample) for examples)
+(See [sample app](https://github.com/pebble-dev/PebbleKitAndroid2/tree/main/sample) for examples)
 
 ### Installation
 
@@ -68,7 +68,7 @@ where the APP_UUID is the UUID of the target watchapp. Optionally, if you want t
 `sendDataToPebble method`.
 
 The `result` will contain the result of the sending
-(see [TransmissionResult](common-api/src/main/kotlin/io/rebble/pebblekit2/common/model/TransmissionResult.kt)).
+(see [TransmissionResult](https://github.com/pebble-dev/PebbleKitAndroid2/tree/main/common-api/src/main/kotlin/io/rebble/pebblekit2/common/model/TransmissionResult.kt)).
 
 `sendDataToPebble()` method is a suspending method and needs to be called from a coroutine. See
 [Kotlin Coroutines](https://kotlinlang.org/docs/coroutines-overview.html) for more info.
@@ -238,12 +238,12 @@ The dialog will take care of the `selectApp()` calls for you, when user selects 
 
 Example dialog for the app that shows the notifications on the watch:
 
-![image](docs/example-prompt-popup.png)
+-![image](docs/example-prompt-popup.png)
 
 ### Non-Kotlin usage
 
 This library is written primarily with Kotlin use in mind. But we have a wrapper that allows it
-to be used with non-Kotlin JVM languages, such as Java. See [JAVA.MD](docs/JAVA.MD).
+to be used with non-Kotlin JVM languages, such as Java. See [JAVA.MD](https://github.com/pebble-dev/PebbleKitAndroid2/tree/main/docs/JAVA.MD).
 
 ## Logging
 
@@ -255,7 +255,7 @@ LogWriters.
 
 ## Server-side (Pebble mobile app) usage
 
-See [SERVER.MD](docs/SERVER.MD).
+See [SERVER.MD](https://github.com/pebble-dev/PebbleKitAndroid2/tree/main/docs/SERVER.MD).
 
 # Supported Pebble apps
 
