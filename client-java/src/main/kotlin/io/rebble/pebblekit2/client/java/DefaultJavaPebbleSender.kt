@@ -3,6 +3,8 @@ package io.rebble.pebblekit2.client.java
 import android.content.Context
 import io.rebble.pebblekit2.client.DefaultPebbleSender
 import io.rebble.pebblekit2.common.model.PebbleDictionaryItem
+import io.rebble.pebblekit2.common.model.TimelinePin
+import io.rebble.pebblekit2.common.model.TimelineResult
 
 import io.rebble.pebblekit2.common.model.TransmissionResult
 import io.rebble.pebblekit2.common.model.WatchIdentifier
@@ -79,6 +81,28 @@ public class DefaultJavaPebbleSender @JvmOverloads constructor(
     ) {
         coroutineScope.launch {
             val result = pebbleSender.stopAppOnTheWatch(watchappUUID)
+            onResult.accept(result)
+        }
+    }
+
+    override fun insertTimelinePin(
+        watchappUUID: UUID,
+        timelinePin: TimelinePin,
+        onResult: Consumer<TimelineResult>,
+    ) {
+        coroutineScope.launch {
+            val result = pebbleSender.insertTimelinePin(watchappUUID, timelinePin)
+            onResult.accept(result)
+        }
+    }
+
+    override fun deleteTimelinePin(
+        watchappUUID: UUID,
+        id: String,
+        onResult: Consumer<TimelineResult>,
+    ) {
+        coroutineScope.launch {
+            val result = pebbleSender.deleteTimelinePin(watchappUUID, id)
             onResult.accept(result)
         }
     }

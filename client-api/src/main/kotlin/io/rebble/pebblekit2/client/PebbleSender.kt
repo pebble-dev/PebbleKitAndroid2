@@ -1,6 +1,8 @@
 package io.rebble.pebblekit2.client
 
 import io.rebble.pebblekit2.common.model.PebbleDictionary
+import io.rebble.pebblekit2.common.model.TimelinePin
+import io.rebble.pebblekit2.common.model.TimelineResult
 import io.rebble.pebblekit2.common.model.TransmissionResult
 import io.rebble.pebblekit2.common.model.WatchIdentifier
 import java.lang.AutoCloseable
@@ -65,4 +67,26 @@ public interface PebbleSender : AutoCloseable {
         watchappUUID: UUID,
         watches: List<WatchIdentifier>? = null,
     ): Map<WatchIdentifier, TransmissionResult>?
+
+    /**
+     * Insert a timeline pin. If you reuse an ID of the existing pin, that pin will be updated to the new data instead.
+     *
+     * @param watchappUUID originating app UUID for the pin insertion
+     * @param timelinePin Timeline pin data
+     */
+    public suspend fun insertTimelinePin(
+        watchappUUID: UUID,
+        timelinePin: TimelinePin,
+    ): TimelineResult
+
+    /**
+     * Delete a timeline pin.
+     *
+     * @param watchappUUID originating app UUID for the pin insertion
+     * @param id Timeline pin data
+     */
+    public suspend fun deleteTimelinePin(
+        watchappUUID: UUID,
+        id: String,
+    ): TimelineResult
 }

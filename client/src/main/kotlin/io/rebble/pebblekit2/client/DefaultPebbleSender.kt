@@ -8,6 +8,8 @@ import io.rebble.pebblekit2.PebbleKitBundleKeys
 import io.rebble.pebblekit2.common.PebbleKitIntents
 import io.rebble.pebblekit2.common.UniversalRequestResponse
 import io.rebble.pebblekit2.common.model.PebbleDictionary
+import io.rebble.pebblekit2.common.model.TimelinePin
+import io.rebble.pebblekit2.common.model.TimelineResult
 import io.rebble.pebblekit2.common.model.TransmissionResult
 import io.rebble.pebblekit2.common.model.WatchIdentifier
 import io.rebble.pebblekit2.common.model.fromBundle
@@ -114,6 +116,40 @@ public class DefaultPebbleSender(context: Context) : PebbleSender {
                 PebbleKitBundleKeys.KEY_WATCHES_ID to watches?.map { it.value }?.toTypedArray<String>()
             )
         )
+    }
+
+    override suspend fun insertTimelinePin(
+        watchappUUID: UUID,
+        timelinePin: TimelinePin,
+    ): TimelineResult {
+        val connection = connector.getOrConnect() ?: return TimelineResult.FailedNoPebbleApp
+        val bundle = bundleOf(
+            PebbleKitBundleKeys.KEY_ACTION to PebbleKitBundleKeys.ACTION_SHOW_TIMELINE_PIN,
+            PebbleKitBundleKeys.KEY_WATCHAPP_UUID to watchappUUID.toString(),
+            PebbleKitBundleKeys.KEY_TIMELINE_PIN to timelinePin.toBundle(),
+        )
+
+        val returnBundle = connection.request(bundle) ?: return TimelineResult.FailedNoPebbleApp
+        val resultBundle = returnBundle.getBundle(PebbleKitBundleKeys.KEY_TIMELINE_RESULT) ?: Bundle()
+
+        return TimelineResult.fromBundle(resultBundle)
+    }
+
+    override suspend fun deleteTimelinePin(
+        watchappUUID: UUID,
+        id: String,
+    ): TimelineResult {
+        val connection = connector.getOrConnect() ?: return TimelineResult.FailedNoPebbleApp
+        val bundle = bundleOf(
+            PebbleKitBundleKeys.KEY_ACTION to PebbleKitBundleKeys.ACTION_DELETE_TIMELINE_PIN,
+            PebbleKitBundleKeys.KEY_WATCHAPP_UUID to watchappUUID.toString(),
+            PebbleKitBundleKeys.KEY_TIMELINE_PIN_ID to id,
+        )
+
+        val returnBundle = connection.request(bundle) ?: return TimelineResult.FailedNoPebbleApp
+        val resultBundle = returnBundle.getBundle(PebbleKitBundleKeys.KEY_TIMELINE_RESULT) ?: Bundle()
+
+        return TimelineResult.fromBundle(resultBundle)
     }
 
     override fun close() {

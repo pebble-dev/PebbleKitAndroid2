@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -32,12 +34,19 @@ import io.rebble.pebblekit2.client.DefaultPebbleAndroidAppPicker
 import io.rebble.pebblekit2.client.DefaultPebbleInfoRetriever
 import io.rebble.pebblekit2.client.DefaultPebbleSender
 import io.rebble.pebblekit2.common.model.PebbleDictionaryItem
+import io.rebble.pebblekit2.common.model.TimelineLayout
+import io.rebble.pebblekit2.common.model.TimelineLayoutType
+import io.rebble.pebblekit2.common.model.TimelinePin
 import io.rebble.pebblekit2.sample.ui.theme.PebbleKitSampleTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import java.time.Instant
 import java.time.LocalTime
 import java.util.UUID
+import kotlin.time.Clock
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.toJavaDuration
 
 class MainActivity : ComponentActivity() {
     private val sender = DefaultPebbleSender(this)
@@ -54,6 +63,8 @@ class MainActivity : ComponentActivity() {
                         closeApp = ::closeAppOnWatch,
                         connectedWatchesForeground = ::startGettingConnectedWatchesInForeground,
                         connectedWatchesBackground = ::startGettingConnectedWatchesInBackground,
+                        insertTimelinePin = ::insertTimelinePin,
+                        deleteTimelinePin = ::deleteTimelinePin,
                     )
                 }
             }
@@ -86,6 +97,38 @@ class MainActivity : ComponentActivity() {
 
             Log.d("PebbleKitSample", "Command sent. Result: $result")
         }
+    }
+
+    private fun insertTimelinePin() {
+        lifecycleScope.launch {
+            val result = sender.insertTimelinePin(
+                APP_UUID,
+                TimelinePin(
+                    "1",
+                    Clock.System.now().plus(10.minutes),
+                    duration = 15.minutes,
+                    layout = TimelineLayout(
+                        TimelineLayoutType.CALENDAR_PIN,
+                        title = "Demo timeline pin",
+                        tinyIcon = "system://images/BIRTHDAY_EVENT",
+                    )
+                )
+            )
+
+            Log.d("PebbleKitSample", "Command sent. Result: $result")
+        }
+    }
+
+    private fun deleteTimelinePin() {
+        lifecycleScope.launch {
+            val result = sender.deleteTimelinePin(
+                APP_UUID,
+                "1",
+            )
+
+            Log.d("PebbleKitSample", "Command sent. Result: $result")
+        }
+
     }
 
     private fun startGettingConnectedWatchesInForeground() {
@@ -138,10 +181,12 @@ fun SampleUI(
     closeApp: () -> Unit,
     connectedWatchesForeground: () -> Unit,
     connectedWatchesBackground: () -> Unit,
+    insertTimelinePin: () -> Unit,
+    deleteTimelinePin: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier,
+        modifier = modifier.verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -155,6 +200,14 @@ fun SampleUI(
 
         Button(onClick = closeApp) {
             Text("Close app on the watch")
+        }
+
+        Button(onClick = insertTimelinePin) {
+            Text("Insert timeline pin")
+        }
+
+        Button(onClick = deleteTimelinePin) {
+            Text("Delete timeline pin")
         }
 
         Spacer(Modifier.size(16.dp))
@@ -175,6 +228,14 @@ private val APP_UUID = UUID.fromString("0054f75d-e60a-4932-8f8d-fe5c7dd365f6")
 @Composable
 fun SampleUIPreview() {
     PebbleKitSampleTheme {
-        SampleUI({}, {}, {}, {}, {})
+        SampleUI(
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {}
+        )
     }
 }

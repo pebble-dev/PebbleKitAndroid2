@@ -122,6 +122,10 @@ start callback called.
 You can call `sender.startAppOnTheWatch()` and `sender.stopAppOnTheWatch()` to start/stop your app on the watch
 from the phone.
 
+### Timeline pin creation/deletion
+
+`PebbleSender` also has methods for timeline pin creation/deletion.
+
 ### Getting status about the Pebble watch
 
 You can also use `PebbleInfoRetriever` to retrieve various infos about the status of the Pebble watch and its

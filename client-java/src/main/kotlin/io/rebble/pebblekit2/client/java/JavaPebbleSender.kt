@@ -3,6 +3,8 @@ package io.rebble.pebblekit2.client.java
 import io.rebble.pebblekit2.client.PebbleAndroidAppPicker
 import io.rebble.pebblekit2.client.PebbleSender
 import io.rebble.pebblekit2.common.model.PebbleDictionaryItem
+import io.rebble.pebblekit2.common.model.TimelinePin
+import io.rebble.pebblekit2.common.model.TimelineResult
 import io.rebble.pebblekit2.common.model.TransmissionResult
 import io.rebble.pebblekit2.common.model.WatchIdentifier
 import java.util.UUID
@@ -112,5 +114,31 @@ public interface JavaPebbleSender : AutoCloseable {
     public fun stopAppOnTheWatch(
         watchappUUID: UUID,
         onResult: Consumer<Map<WatchIdentifier, TransmissionResult>?>,
+    )
+
+    /**
+     * Insert a timeline pin. If you reuse an ID of the existing pin, that pin will be updated to the new data instead.
+     *
+     * @param watchappUUID originating app UUID for the pin insertion
+     * @param timelinePin Timeline pin data
+     * @param onResult Callback with the result.
+     */
+    public fun insertTimelinePin(
+        watchappUUID: UUID,
+        timelinePin: TimelinePin,
+        onResult: Consumer<TimelineResult>,
+    )
+
+    /**
+     * Delete a timeline pin.
+     *
+     * @param watchappUUID originating app UUID for the pin insertion
+     * @param id Timeline pin data
+     * @param onResult Callback with the result.
+     */
+    public fun deleteTimelinePin(
+        watchappUUID: UUID,
+        id: String,
+        onResult: Consumer<TimelineResult>,
     )
 }

@@ -9,8 +9,11 @@ import co.touchlab.kermit.Logger
 import io.rebble.pebblekit2.PebbleKitBundleKeys
 import io.rebble.pebblekit2.common.model.PebbleDictionary
 import io.rebble.pebblekit2.common.model.PebbleDictionaryItem
+import io.rebble.pebblekit2.common.model.TimelinePin
+import io.rebble.pebblekit2.common.model.TimelineResult
 import io.rebble.pebblekit2.common.model.TransmissionResult
 import io.rebble.pebblekit2.common.model.WatchIdentifier
+import io.rebble.pebblekit2.common.model.fromBundle
 import io.rebble.pebblekit2.common.model.mapFromBundle
 import io.rebble.pebblekit2.common.model.toBundle
 import io.rebble.pebblekit2.common.util.UniversalRequestResponseSuspending
@@ -43,6 +46,22 @@ public abstract class BasePebbleSenderReceiver : Service() {
         watches: List<WatchIdentifier>? = null,
     ): Map<WatchIdentifier, TransmissionResult>
 
+    public open suspend fun insertTimelinePin(
+        callingPackage: String?,
+        watchappUUID: UUID,
+        timelinePin: TimelinePin,
+    ): TimelineResult {
+        return TimelineResult.FailedUnsupportedAction
+    }
+
+    public open suspend fun deleteTimelinePin(
+        callingPackage: String?,
+        watchappUUID: UUID,
+        id: String,
+    ): TimelineResult {
+        return TimelineResult.FailedUnsupportedAction
+    }
+
     override fun onBind(intent: Intent?): IBinder? {
         return Binder().asBinder()
     }
@@ -61,6 +80,14 @@ public abstract class BasePebbleSenderReceiver : Service() {
 
                 PebbleKitBundleKeys.ACTION_STOP_APP -> {
                     requestStopApp(data, callingPackage)
+                }
+
+                PebbleKitBundleKeys.ACTION_SHOW_TIMELINE_PIN -> {
+                    requestInsertTimeline(data, callingPackage)
+                }
+
+                PebbleKitBundleKeys.ACTION_DELETE_TIMELINE_PIN -> {
+                    requestDeleteTimeline(data, callingPackage)
                 }
 
                 else -> {
@@ -133,6 +160,43 @@ public abstract class BasePebbleSenderReceiver : Service() {
             }
 
             return bundleOf(PebbleKitBundleKeys.KEY_TRANSMISSION_RESULTS to transmissionResults)
+        }
+
+        private suspend fun requestInsertTimeline(input: Bundle, callingPackage: String?): Bundle {
+            val watchappUuid = input.getString(PebbleKitBundleKeys.KEY_WATCHAPP_UUID)?.let { UUID.fromString(it) }
+            if (watchappUuid == null) {
+                LOGGER.w { "Got a missing watchapp UUID from ${callingPackage ?: "null"}. Returning empty data...." }
+                return Bundle()
+            }
+
+            val timelinePin = input.getBundle(PebbleKitBundleKeys.KEY_TIMELINE_PIN)
+                ?.let { TimelinePin.fromBundle(it) }
+            if (timelinePin == null) {
+                LOGGER.w { "Got a missing timeline pin from ${callingPackage ?: "null"}. Returning empty data...." }
+                return Bundle()
+            }
+
+            val result = insertTimelinePin(callingPackage, watchappUuid, timelinePin)
+
+            return bundleOf(PebbleKitBundleKeys.KEY_TIMELINE_RESULT to result.toBundle())
+        }
+
+        private suspend fun requestDeleteTimeline(input: Bundle, callingPackage: String?): Bundle {
+            val watchappUuid = input.getString(PebbleKitBundleKeys.KEY_WATCHAPP_UUID)?.let { UUID.fromString(it) }
+            if (watchappUuid == null) {
+                LOGGER.w { "Got a missing watchapp UUID from ${callingPackage ?: "null"}. Returning empty data...." }
+                return Bundle()
+            }
+
+            val timelinePinId = input.getString(PebbleKitBundleKeys.KEY_TIMELINE_PIN_ID)
+            if (timelinePinId == null) {
+                LOGGER.w { "Got a missing timeline pin ID from ${callingPackage ?: "null"}. Returning empty data...." }
+                return Bundle()
+            }
+
+            val result = deleteTimelinePin(callingPackage, watchappUuid, timelinePinId)
+
+            return bundleOf(PebbleKitBundleKeys.KEY_TIMELINE_RESULT to result.toBundle())
         }
     }
 }
