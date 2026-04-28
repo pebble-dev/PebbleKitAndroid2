@@ -29,4 +29,4 @@ jobs:
       - name: Compile library
         run: "./gradlew --parallel assemble"
       - name: Lint
-        run: "./gradlew --continue --parallel lintDebug detektMain detektTest buildHealth reportMerge detektReleaseUnitTest -x detektRelease --continue"
+        run: "./gradlew --continue --parallel lintDebug detekt buildHealth reportMerge --continue"
