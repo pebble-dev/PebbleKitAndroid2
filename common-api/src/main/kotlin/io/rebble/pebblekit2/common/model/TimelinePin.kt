@@ -25,6 +25,28 @@ public data class TimelinePin(
      * Description of the values to populate the layout when the user views the pin.
      */
     val layout: TimelineLayout,
+
+    /**
+     * Optional reminders that buzz the watch before this pin's start time.
+     * Each reminder is inserted into BlobDatabase.Reminder and linked to this pin.
+     */
+    val reminders: List<TimelineReminder> = emptyList(),
+) {
+    public companion object
+}
+
+/**
+ * A reminder that fires before a [TimelinePin] and buzzes the watch.
+ *
+ * Use [TimelineLayoutType.GENERIC_REMINDER] for the layout type, and
+ * `system://images/NOTIFICATION_REMINDER` as the icon.
+ *
+ * @param time absolute time at which the reminder fires (e.g. pin.startTime - 15.minutes)
+ * @param layout layout shown on the watch when the reminder fires
+ */
+public data class TimelineReminder(
+    val time: Instant,
+    val layout: TimelineLayout,
 ) {
     public companion object
 }
