@@ -13,11 +13,11 @@ android {
 dependencies {
     api(projects.clientApi)
 
+    api(libs.androidx.compose.material3)
+    api(libs.kotlin.coroutines)
     implementation(libs.accompanist.drawablepainter)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.kotlin.coroutines)
 
     debugImplementation(libs.androidx.compose.ui.tooling)
 }

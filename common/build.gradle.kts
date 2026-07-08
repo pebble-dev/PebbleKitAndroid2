@@ -11,6 +11,6 @@ android {
 
 dependencies {
     api(projects.commonApi)
-    implementation(libs.kotlin.coroutines)
+    api(libs.kotlin.coroutines)
     implementation(libs.kermit)
 }

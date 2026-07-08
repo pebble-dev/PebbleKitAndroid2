@@ -13,9 +13,9 @@ dependencies {
     api(projects.commonApi)
     api(projects.client)
     api(projects.clientApi)
+    api(libs.kotlin.coroutines)
 
     implementation(libs.androidx.datastore.preferences)
-    implementation(libs.kotlin.coroutines)
 }
 
 dependencyAnalysis {

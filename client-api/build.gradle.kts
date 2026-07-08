@@ -5,6 +5,6 @@ plugins {
 
 dependencies {
     api(projects.commonApi)
+    api(libs.kotlin.coroutines)
     implementation(libs.androidx.annotation)
-    implementation(libs.kotlin.coroutines)
 }

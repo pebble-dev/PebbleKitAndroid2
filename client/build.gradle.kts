@@ -14,10 +14,10 @@ dependencies {
     api(projects.commonApi)
     api(projects.clientApi)
 
+    api(libs.kotlin.coroutines)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.core)
     implementation(libs.kermit)
-    implementation(libs.kotlin.coroutines)
 }
 
 dependencyAnalysis {
