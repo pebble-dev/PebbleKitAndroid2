@@ -43,14 +43,14 @@ public class DefaultPebbleInfoRetriever(private val context: Context) : PebbleIn
             projection = PebbleKitProviderContract.ConnectedWatch.ALL_COLUMNS,
             mapper = { cursor ->
                 ConnectedWatch(
-                    WatchIdentifier(cursor.getString(0)),
-                    cursor.getString(1),
-                    cursor.getString(2),
-                    cursor.getString(3),
-                    cursor.getInt(4),
-                    cursor.getInt(5),
-                    cursor.getInt(6),
-                    cursor.getString(7),
+                    id = WatchIdentifier(cursor.getString(0)),
+                    name = cursor.getString(1),
+                    platform = cursor.getString(2),
+                    revision = cursor.getString(3),
+                    firmwareVersionMajor = cursor.getInt(4),
+                    firmwareVersionMinor = cursor.getInt(5),
+                    firmwareVersionPatch = cursor.getInt(6),
+                    firmwareVersionTag = cursor.getString(7),
                 )
             }
         )
@@ -96,15 +96,14 @@ public class DefaultPebbleInfoRetriever(private val context: Context) : PebbleIn
             } else {
                 val uri = getUri(pebbleAppPackage)
                 context.contentResolver.flowOfChanges(uri).map {
-                    val cursor = context.contentResolver.query(
+                    context.contentResolver.query(
                         /* uri = */ uri,
                         /* projection = */ projection.toTypedArray(),
                         /* selection = */ null,
                         /* selectionArgs = */ null,
                         /* sortOrder = */ null,
                         /* cancellationSignal = */ null
-                    )
-                    cursor.use {
+                    ).use { cursor ->
                         cursor?.mapToList(mapper).orEmpty()
                     }
                 }

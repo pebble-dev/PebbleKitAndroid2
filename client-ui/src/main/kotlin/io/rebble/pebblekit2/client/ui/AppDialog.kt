@@ -109,7 +109,7 @@ public fun PebbleAppPermissionDialog(
                 appName
             }
 
-            permissionDialogState = DialogState(pkg, finalLabel)
+            permissionDialogState = DialogState(appPackage = pkg, appTitle = finalLabel)
             icon = try {
                 packageManager.getApplicationIcon(pkg)
             } catch (ignored: PackageManager.NameNotFoundException) {
@@ -123,16 +123,16 @@ public fun PebbleAppPermissionDialog(
     val currentPermissionDialogState = permissionDialogState
     if (currentPermissionDialogState != null) {
         PermissionDialog(
-            onDismiss,
-            title,
-            introductionText,
-            currentPermissionDialogState,
-            rationaleText,
-            icon,
-            coroutineScope,
-            pebbleAndroidAppPicker,
-            buttonGrantText,
-            buttonDenyText
+            onDismiss = onDismiss,
+            title = title,
+            introductionText = introductionText,
+            currentPermissionDialogState = currentPermissionDialogState,
+            rationaleText = rationaleText,
+            icon = icon,
+            coroutineScope = coroutineScope,
+            pebbleAndroidAppPicker = pebbleAndroidAppPicker,
+            buttonGrant = buttonGrantText,
+            buttonDeny = buttonDenyText
         )
     } else if (showNoAppsInstalled) {
         NoAppsInstalledDialog(onDismiss, title, noAppsInstalledText, buttonOkText)

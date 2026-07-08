@@ -64,7 +64,7 @@ private fun Bundle.putLayoutFields(layout: TimelineLayout) {
 }
 
 private fun TimelineLayout.Companion.fromBundle(bundle: Bundle): TimelineLayout {
-    val typeCode = bundle.getString(KEY_LAYOUT_TYPE) ?: ""
+    val typeCode = bundle.getString(KEY_LAYOUT_TYPE).orEmpty()
     val type = TimelineLayoutType.entries.firstOrNull { it.code == typeCode }
         ?: run {
             Logger.withTag("PebbleKit")

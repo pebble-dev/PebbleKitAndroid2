@@ -53,11 +53,11 @@ public class DefaultPebbleAndroidAppPicker private constructor(private val conte
             "Package ${packageName ?: "null"} is not a mobile Pebble app"
         }
 
-        createOrGetDataStore(context).edit {
+        createOrGetDataStore(context).edit { prefs ->
             if (packageName == null) {
-                it.remove(SELECTED_APP_KEY)
+                prefs.remove(SELECTED_APP_KEY)
             } else {
-                it[SELECTED_APP_KEY] = packageName
+                prefs[SELECTED_APP_KEY] = packageName
             }
         }
     }

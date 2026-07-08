@@ -57,9 +57,9 @@ public abstract class BasePebbleKitProvider : ContentProvider() {
                     )
 
                     val connectedWatchIds =
-                        connectedWatches.map {
+                        connectedWatches.map { watchMetadata ->
                             WatchIdentifier(
-                                it.getValue(PebbleKitProviderContract.ConnectedWatch.ID)!! as String
+                                watchMetadata.getValue(PebbleKitProviderContract.ConnectedWatch.ID)!! as String
                             )
                         }
 

@@ -32,7 +32,8 @@ public class DefaultPebbleListenerConnector(
                 .firstOrNull { packageName ->
                     val checkIntent = Intent(PebbleKitIntents.RECEIVE_DATA).setPackage(packageName)
                     context.packageManager.queryIntentServices(checkIntent, 0).isNotEmpty()
-                } ?: return@SuspendingBindingConnection null
+                }
+                ?: return@SuspendingBindingConnection null
 
             Intent(PebbleKitIntents.RECEIVE_DATA).setPackage(firstValidPackage)
         },
