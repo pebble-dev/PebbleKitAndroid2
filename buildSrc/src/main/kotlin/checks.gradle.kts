@@ -1,4 +1,5 @@
-import io.gitlab.arturbosch.detekt.Detekt
+import dev.detekt.gradle.Detekt
+import dev.detekt.gradle.extensions.DetektExtension
 import org.gradle.accessors.dm.LibrariesForLibs
 import si.inova.kotlinova.gradle.KotlinovaExtension
 import util.commonAndroid
@@ -7,9 +8,11 @@ import util.isAndroidProject
 val libs = the<LibrariesForLibs>()
 
 plugins {
-    id("io.gitlab.arturbosch.detekt")
     id("kotlinova")
 }
+
+// Apply detekt the old way until https://github.com/detekt/detekt/issues/8977 is solved
+apply(plugin = "dev.detekt")
 
 if (isAndroidProject()) {
     commonAndroid {
@@ -23,7 +26,7 @@ if (isAndroidProject()) {
     }
 }
 
-detekt {
+configure<DetektExtension> {
     config.setFrom("$rootDir/config/detekt.yml")
 }
 
@@ -45,6 +48,5 @@ configure<KotlinovaExtension> {
 }
 
 dependencies {
-    detektPlugins(libs.detekt.formatting)
-    detektPlugins(libs.detekt.compilerWarnings)
+    add("detektPlugins", libs.detekt.ktlint)
 }

@@ -9,13 +9,12 @@ androidx-core = "1.17.0"
 androidx-datastore = "1.1.7"
 dependencyAnalysis = "3.9.0"
 dokka = "2.1.0"
-detekt = "1.23.8"
-detekt-compilerWarnings = "0.0.4"
+detekt = "2.0.0-alpha.5"
 kermit = "2.0.4"
 mavenPublish = "0.36.0"
 kotlin = "2.3.20"
 kotlin-coroutines = "1.10.2"
-kotlinova = "4.0.0-alpha07"
+kotlinova = "4.1.1"
 tomlj = "1.1.1"
 versionCatalogUpdate = "1.0.1"
 
@@ -31,9 +30,8 @@ androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "androidx-datastore" }
 dependencyAnalysis = { module = "com.autonomousapps:dependency-analysis-gradle-plugin", version.ref = "dependencyAnalysis" }
-detekt-compilerWarnings = { module = "com.braisgabin.detekt:kotlin-compiler-wrapper", version.ref = "detekt-compilerWarnings" }
-detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
-detekt-plugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+detekt-ktlint = { module = "dev.detekt:detekt-rules-ktlint-wrapper", version.ref = "detekt" }
+detekt-plugin = { module = "dev.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 dokka = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlin-coroutines" }
@@ -43,7 +41,7 @@ mavenPublish = { module = "com.vanniktech.maven.publish:com.vanniktech.maven.pub
 tomlj = { module = "org.tomlj:tomlj", version.ref = "tomlj" }
 
 [plugins]
-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+detekt = { id = "dev.detekt", version.ref = "detekt" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 versionCatalogUpdate = { id = "nl.littlerobots.version-catalog-update", version.ref = "versionCatalogUpdate" }
