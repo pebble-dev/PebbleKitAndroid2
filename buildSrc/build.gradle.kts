@@ -37,6 +37,8 @@ dependencies {
     implementation(libs.detekt.plugin)
     implementation(libs.dependencyAnalysis)
     implementation(libs.dokka)
+    // Force kotlin metadata version as a workaround for the https://github.com/autonomousapps/dependency-analysis-gradle-plugin/issues/1661
+    implementation(libs.kotlin.metadata)
     implementation(libs.kotlin.plugin)
     implementation(libs.kotlinova.gradle)
     implementation(libs.mavenPublish)
