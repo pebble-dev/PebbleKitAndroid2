@@ -18,7 +18,7 @@ commonAndroid {
     val uniqueNamespaceSuffix = path.removePrefix(":").replace(':', '.').replace("-", "")
     namespace = "io.rebble.pebblekit2.noresources.$uniqueNamespaceSuffix"
 
-    compileSdk = 36
+    compileSdk = 37
 
     compileOptions.apply {
         sourceCompatibility = JavaVersion.VERSION_17
