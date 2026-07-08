@@ -1,5 +1,6 @@
 package io.rebble.pebblekit2.client.ui
 
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
@@ -46,6 +47,7 @@ import kotlinx.coroutines.withContext
  * when granted or set it to *null* when denied. Value will be set before the call to the [onDismiss] is made.
  */
 @Composable
+@SuppressLint("QueryPermissionsNeeded") // False positive
 public fun PebbleAppPermissionDialog(
     pebbleAndroidAppPicker: PebbleAndroidAppPicker,
     /**

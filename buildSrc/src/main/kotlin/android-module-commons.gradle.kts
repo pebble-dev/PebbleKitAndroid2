@@ -1,14 +1,12 @@
 import com.android.build.api.dsl.LibraryAndroidResources
 import com.android.build.gradle.tasks.asJavaVersion
 import org.gradle.accessors.dm.LibrariesForLibs
-import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import util.commonAndroid
 
 val libs = the<LibrariesForLibs>()
 
 plugins {
-    id("org.jetbrains.kotlin.android")
-
     id("all-modules-commons")
     id("org.gradle.android.cache-fix")
 }
@@ -22,22 +20,22 @@ commonAndroid {
 
     compileSdk = 36
 
-    compileOptions {
+    compileOptions.apply {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    defaultConfig {
+    defaultConfig.apply {
         minSdk = 24
     }
 
-    packaging {
-        resources {
+    packaging.apply {
+        resources.apply {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
 
-    buildFeatures {
+    buildFeatures.apply {
         buildConfig = false
         resValues = false
         shaders = false
@@ -47,17 +45,18 @@ commonAndroid {
     if (androidResources is LibraryAndroidResources) {
         androidResources.enable = false
     }
-    compileOptions {
+    compileOptions.apply {
         // Android still creates java tasks, even with 100% Kotlin.
         // Ensure that target compatiblity is equal to kotlin's jvmToolchain
         lateinit var javaVersion: JavaVersion
-        the<KotlinProjectExtension>().jvmToolchain { javaVersion = this.languageVersion.get().asJavaVersion() }
+        project.the<KotlinAndroidProjectExtension>()
+            .jvmToolchain { javaVersion = this.languageVersion.get().asJavaVersion() }
 
         targetCompatibility = javaVersion
     }
 }
 
-kotlin {
+configure<KotlinAndroidProjectExtension> {
     compilerOptions {
         freeCompilerArgs.add("-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi")
         freeCompilerArgs.add("-opt-in=kotlinx.coroutines.FlowPreview")
