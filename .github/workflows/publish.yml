@@ -54,7 +54,7 @@ jobs:
       - name: Compile library
         run: "./gradlew --parallel assemble"
       - name: Lint
-        run: "./gradlew --continue --parallel lintDebug detekt buildHealth reportMerge --continue"
+        run: "./gradlew --continue --parallel lintDebug detektMain detektTest detektDebugUnitTest buildHealth reportMerge --continue"
       - name: Generate Changelog
         id: changelog
         uses: inovait/actions-common/git-changelog-generator@v8
