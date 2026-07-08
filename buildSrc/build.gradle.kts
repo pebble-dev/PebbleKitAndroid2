@@ -15,6 +15,10 @@ repositories {
     gradlePluginPortal()
 }
 
+kotlin {
+    jvmToolchain(21)
+}
+
 detekt {
     config.setFrom("$projectDir/../config/detekt.yml", "$projectDir/../config/detekt-buildSrc.yml")
 }
