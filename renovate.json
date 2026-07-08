@@ -1,0 +1,28 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":semanticCommitTypeAll(chore)",
+    ":semanticCommitScopeDisabled",
+    "helpers:pinGitHubActionDigestsToSemver"
+  ],
+  "minimumReleaseAge": "7 days",
+  "minimumReleaseAgeBehaviour": "timestamp-optional",
+  "schedule": [
+    "* 17-23 * * 2"
+  ],
+  "prHourlyLimit": 5,
+  "updateNotScheduled": true,
+  "timezone": "Europe/Ljubljana",
+  "packageRules": [
+    {
+      "matchDepTypes": [
+        "action"
+      ],
+      "matchUpdateTypes": [
+        "digest"
+      ],
+      "enabled": false
+    }
+  ]
+}
