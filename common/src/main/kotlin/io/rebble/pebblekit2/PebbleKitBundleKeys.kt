@@ -9,6 +9,10 @@ public object PebbleKitBundleKeys {
     public const val KEY_TRANSMISSION_RESULTS: String = "TRANSMISSION_RESULTS"
     public const val KEY_RECEIVE_RESULT: String = "TRANSMISSION_RESULTS"
 
+    public const val KEY_DATA_LOG_SESSION: String = "DATA_LOG_SESSION"
+    public const val KEY_DATA_LOG_DATA: String = "DATA_LOG_DATA"
+    public const val KEY_DATA_LOG_ITEMS_LEFT: String = "DATA_LOG_ITEMS_LEFT"
+
     public const val KEY_TIMELINE_PIN: String = "TIMELINE_PIN"
 
     public const val KEY_TIMELINE_PIN_ID: String = "TIMELINE_PIN_ID"
@@ -18,6 +22,9 @@ public object PebbleKitBundleKeys {
     public const val ACTION_RECEIVE_DATA_FROM_WATCH: String = "ACTION_RECEIVE_DATA_FROM_WATCH"
     public const val ACTION_APP_OPENED: String = "APP_OPENED"
     public const val ACTION_APP_CLOSED: String = "APP_CLOSED"
+
+    public const val ACTION_DATA_LOG_RECEIVED: String = "DATA_LOG_RECEIVED"
+    public const val ACTION_DATA_LOG_SESSION_FINISHED: String = "DATA_LOG_SESSION_FINISHED"
 
     public const val ACTION_START_APP: String = "START_APP"
     public const val ACTION_STOP_APP: String = "STOP_APP"

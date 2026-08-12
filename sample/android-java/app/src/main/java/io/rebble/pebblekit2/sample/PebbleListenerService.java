@@ -2,6 +2,7 @@ package io.rebble.pebblekit2.sample;
 
 import android.util.Log;
 import io.rebble.pebblekit2.client.java.BaseJavaPebbleListenerService;
+import io.rebble.pebblekit2.common.model.DataLogSession;
 import io.rebble.pebblekit2.common.model.PebbleDictionaryItem;
 import io.rebble.pebblekit2.common.model.ReceiveResult;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +18,29 @@ public class PebbleListenerService extends BaseJavaPebbleListenerService {
                                   @NotNull String watch,
                                   @NotNull Consumer<@NotNull ReceiveResult> responder) {
         Log.d("PebbleListenerService", "Received " + data + " from app " + watchappUUID + " on the watch " + watch);
+
+        responder.accept(ReceiveResult.Ack.INSTANCE);
+    }
+
+    @Override
+    protected void onDataLogReceived(@NotNull UUID watchappUUID,
+                                     @NotNull DataLogSession session,
+                                     @NotNull byte[] data,
+                                     long itemsLeft,
+                                     @NotNull String watch,
+                                     @NotNull Consumer<@NotNull ReceiveResult> responder) {
+        Log.d("PebbleListenerService", "Received " + (data.length / session.getItemSize())
+                + " data log items of session " + session + " from app " + watchappUUID);
+
+        responder.accept(ReceiveResult.Ack.INSTANCE);
+    }
+
+    @Override
+    protected void onDataLogSessionFinished(@NotNull UUID watchappUUID,
+                                            @NotNull DataLogSession session,
+                                            @NotNull String watch,
+                                            @NotNull Consumer<@NotNull ReceiveResult> responder) {
+        Log.d("PebbleListenerService", "Data log session " + session + " from app " + watchappUUID + " finished");
 
         responder.accept(ReceiveResult.Ack.INSTANCE);
     }
