@@ -1,6 +1,3 @@
-import gradle.kotlin.dsl.accessors._df438b9d261df97d39394f67dfadf160.mavenPublishing
-
-
 plugins {
     id("com.vanniktech.maven.publish")
     id("org.jetbrains.dokka")
