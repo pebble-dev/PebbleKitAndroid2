@@ -36,7 +36,7 @@ public fun TimelineAction.Companion.fromBundle(bundle: Bundle): TimelineAction {
         title = bundle.getString(KEY_ACTION_TITLE) ?: error("missing action title"),
         type = type,
         launchCode = if (bundle.containsKey(KEY_ACTION_LAUNCH_CODE)) {
-            bundle.getLong(KEY_ACTION_LAUNCH_CODE)
+            bundle.getLong(KEY_ACTION_LAUNCH_CODE).toUInt()
         } else {
             null
         },
@@ -72,7 +72,7 @@ public fun TimelineAction.toBundle(): Bundle {
     return Bundle().apply {
         putString(KEY_ACTION_TITLE, title)
         putString(KEY_ACTION_TYPE, type.code)
-        launchCode?.let { putLong(KEY_ACTION_LAUNCH_CODE, it) }
+        launchCode?.let { putLong(KEY_ACTION_LAUNCH_CODE, it.toLong()) }
     }
 }
 

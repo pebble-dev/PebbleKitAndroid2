@@ -50,22 +50,14 @@ public data class TimelinePin(
  *
  * @param title label shown in the action menu
  * @param type what the action does when selected
- * @param launchCode uint32 passed to the watchapp as launch args ([TimelineActionType.OPEN_WATCH_APP] only)
+ * @param launchCode passed to the watchapp as launch args ([TimelineActionType.OPEN_WATCH_APP] only)
  */
 public data class TimelineAction(
     val title: String,
     val type: TimelineActionType = TimelineActionType.OPEN_WATCH_APP,
-    val launchCode: Long? = null,
+    val launchCode: UInt? = null,
 ) {
-    init {
-        require(launchCode == null || launchCode in 0..MAX_LAUNCH_CODE) {
-            "launchCode must fit in an unsigned 32-bit integer, got $launchCode"
-        }
-    }
-
-    public companion object {
-        private const val MAX_LAUNCH_CODE: Long = 0xFFFFFFFFL
-    }
+    public companion object
 }
 
 public enum class TimelineActionType(public val code: String) {
