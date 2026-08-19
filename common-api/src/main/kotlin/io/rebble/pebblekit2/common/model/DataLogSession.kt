@@ -1,5 +1,7 @@
 package io.rebble.pebblekit2.common.model
 
+import kotlin.time.Instant
+
 /**
  * A data logging session. The watch makes a session when a watchapp calls `data_logging_create()`.
  *
@@ -14,10 +16,10 @@ public data class DataLogSession(
     val tag: Long,
 
     /**
-     * The Unix time, in seconds, when the watch made the session. It separates two sessions with
-     * the same [tag], unless the watchapp made both in the same second.
+     * The time when the watch made the session, with one-second resolution. It separates two
+     * sessions with the same [tag], unless the watchapp made both in the same second.
      */
-    val timestamp: Long,
+    val timestamp: Instant,
 
     /**
      * The size, in bytes, of one data item.

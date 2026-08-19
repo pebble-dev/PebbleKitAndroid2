@@ -7,7 +7,6 @@ import io.rebble.pebblekit2.common.model.PebbleDictionaryItem
 import io.rebble.pebblekit2.common.model.ReceiveResult
 import io.rebble.pebblekit2.common.model.WatchIdentifier
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.withTimeoutOrNull
 import java.util.UUID
 import java.util.function.Consumer
 
@@ -53,8 +52,7 @@ public abstract class BaseJavaPebbleListenerService : BasePebbleListenerService(
             { completableDeferred.complete(it) },
         )
 
-        return withTimeoutOrNull(DATA_LOG_RESPONDER_TIMEOUT_MS) { completableDeferred.await() }
-            ?: ReceiveResult.Nack
+        return completableDeferred.await()
     }
 
     final override suspend fun onDataLogSessionFinished(
@@ -71,8 +69,7 @@ public abstract class BaseJavaPebbleListenerService : BasePebbleListenerService(
             { completableDeferred.complete(it) },
         )
 
-        return withTimeoutOrNull(DATA_LOG_RESPONDER_TIMEOUT_MS) { completableDeferred.await() }
-            ?: ReceiveResult.Nack
+        return completableDeferred.await()
     }
 
     final override fun onAppOpened(watchappUUID: UUID, watch: WatchIdentifier) {
@@ -116,8 +113,7 @@ public abstract class BaseJavaPebbleListenerService : BasePebbleListenerService(
      * You MUST call [responder] after you are done processing this callback. Use
      * [ReceiveResult.Ack] only after you stored the data; the Pebble app can then discard it. Use
      * [ReceiveResult.Nack] if you could not store the data; the Pebble app can then try the
-     * delivery again later. If you do not call [responder] in 30 seconds, the library answers
-     * [ReceiveResult.Nack].
+     * delivery again later.
      */
     protected open fun onDataLogReceived(
         watchappUUID: UUID,
@@ -137,8 +133,7 @@ public abstract class BaseJavaPebbleListenerService : BasePebbleListenerService(
      *
      * Passed [watch] parameter corresponds to the [WatchIdentifier.value].
      *
-     * You MUST call [responder] after you are done processing this callback. If you do not call
-     * [responder] in 30 seconds, the library answers [ReceiveResult.Nack].
+     * You MUST call [responder] after you are done processing this callback.
      */
     protected open fun onDataLogSessionFinished(
         watchappUUID: UUID,
@@ -166,5 +161,3 @@ public abstract class BaseJavaPebbleListenerService : BasePebbleListenerService(
     protected open fun onAppClosed(watchappUUID: UUID, watch: String) {
     }
 }
-
-private const val DATA_LOG_RESPONDER_TIMEOUT_MS = 30_000L

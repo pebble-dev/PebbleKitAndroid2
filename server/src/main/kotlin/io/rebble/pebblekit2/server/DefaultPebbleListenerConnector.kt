@@ -3,7 +3,6 @@ package io.rebble.pebblekit2.server
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.RemoteException
 import androidx.core.os.bundleOf
 import io.rebble.pebblekit2.PebbleKitBundleKeys
 import io.rebble.pebblekit2.common.PebbleKitIntents
@@ -125,9 +124,6 @@ public class DefaultPebbleListenerConnector(
             } else {
                 throw e
             }
-        } catch (ignored: RemoteException) {
-            // A binder failure, for example TransactionTooLargeException for an oversized bundle
-            return null
         }
         val resultBundle = returnBundle.getBundle(PebbleKitBundleKeys.KEY_RECEIVE_RESULT) ?: Bundle()
 
