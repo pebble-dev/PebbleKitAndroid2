@@ -10,12 +10,36 @@ public fun TimelinePin.Companion.fromBundle(bundle: Bundle): TimelinePin {
     val reminders = (0 until reminderCount).map { i ->
         TimelineReminder.fromBundle(bundle.getBundle("$KEY_REMINDER_PREFIX$i") ?: Bundle())
     }
+    val actionCount = bundle.getInt(KEY_ACTIONS_COUNT, 0)
+    val actions = (0 until actionCount).map { i ->
+        TimelineAction.fromBundle(bundle.getBundle("$KEY_ACTION_PREFIX$i") ?: Bundle())
+    }
     return TimelinePin(
         id = bundle.getString(KEY_ID) ?: error("missing id"),
         startTime = Instant.parse(bundle.getString(KEY_START_TIME) ?: error("missing start time")),
         duration = bundle.getString(KEY_DURATION)?.let { Duration.parse(it) },
         layout = TimelineLayout.fromBundle(bundle),
         reminders = reminders,
+        actions = actions,
+    )
+}
+
+public fun TimelineAction.Companion.fromBundle(bundle: Bundle): TimelineAction {
+    val typeCode = bundle.getString(KEY_ACTION_TYPE).orEmpty()
+    val type = TimelineActionType.entries.firstOrNull { it.code == typeCode }
+        ?: run {
+            Logger.withTag("PebbleKit")
+                .e { "Got unknown action type '$typeCode' while decoding TimelinePin" }
+            TimelineActionType.OPEN_WATCH_APP
+        }
+    return TimelineAction(
+        title = bundle.getString(KEY_ACTION_TITLE) ?: error("missing action title"),
+        type = type,
+        launchCode = if (bundle.containsKey(KEY_ACTION_LAUNCH_CODE)) {
+            bundle.getLong(KEY_ACTION_LAUNCH_CODE).toUInt()
+        } else {
+            null
+        },
     )
 }
 
@@ -37,6 +61,18 @@ public fun TimelinePin.toBundle(): Bundle {
         reminders.forEachIndexed { i, reminder ->
             putBundle("$KEY_REMINDER_PREFIX$i", reminder.toBundle())
         }
+        putInt(KEY_ACTIONS_COUNT, actions.size)
+        actions.forEachIndexed { i, action ->
+            putBundle("$KEY_ACTION_PREFIX$i", action.toBundle())
+        }
+    }
+}
+
+public fun TimelineAction.toBundle(): Bundle {
+    return Bundle().apply {
+        putString(KEY_ACTION_TITLE, title)
+        putString(KEY_ACTION_TYPE, type.code)
+        launchCode?.let { putLong(KEY_ACTION_LAUNCH_CODE, it.toLong()) }
     }
 }
 
@@ -107,3 +143,8 @@ private const val KEY_LAYOUT_LAST_UPDATED = "LAYOUT_LAST_UPDATED"
 private const val KEY_REMINDERS_COUNT = "REMINDERS_COUNT"
 private const val KEY_REMINDER_PREFIX = "REMINDER_"
 private const val KEY_REMINDER_TIME = "REMINDER_TIME"
+private const val KEY_ACTIONS_COUNT = "ACTIONS_COUNT"
+private const val KEY_ACTION_PREFIX = "ACTION_"
+private const val KEY_ACTION_TITLE = "ACTION_TITLE"
+private const val KEY_ACTION_TYPE = "ACTION_TYPE"
+private const val KEY_ACTION_LAUNCH_CODE = "ACTION_LAUNCH_CODE"

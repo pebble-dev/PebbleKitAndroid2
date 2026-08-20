@@ -31,7 +31,40 @@ public data class TimelinePin(
      * Each reminder is inserted into BlobDatabase.Reminder and linked to this pin.
      */
     val reminders: List<TimelineReminder> = emptyList(),
+
+    /**
+     * Optional actions shown in the pin's action menu on the watch, before the
+     * system-provided "Remove" action.
+     */
+    val actions: List<TimelineAction> = emptyList(),
 ) {
+    public companion object
+}
+
+/**
+ * An action in a [TimelinePin]'s action menu.
+ *
+ * An [OPEN_WATCH_APP][TimelineActionType.OPEN_WATCH_APP] action launches the watchapp the pin is
+ * parented to. The watchapp sees launch reason `timelineAction` and receives [launchCode] via
+ * `launch_get_args()`, allowing the pin to deep-link to content inside the app.
+ *
+ * @param title label shown in the action menu
+ * @param type what the action does when selected
+ * @param launchCode passed to the watchapp as launch args ([TimelineActionType.OPEN_WATCH_APP] only)
+ */
+public data class TimelineAction(
+    val title: String,
+    val type: TimelineActionType = TimelineActionType.OPEN_WATCH_APP,
+    val launchCode: UInt? = null,
+) {
+    public companion object
+}
+
+public enum class TimelineActionType(public val code: String) {
+    OPEN_WATCH_APP("openWatchApp"),
+    HTTP("http"),
+    ;
+
     public companion object
 }
 
