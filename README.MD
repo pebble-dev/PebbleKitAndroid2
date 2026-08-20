@@ -117,6 +117,49 @@ with the `io.rebble.pebblekit2.RECEIVE_DATA_FROM_WATCH` intent filter:
 That's it. When your watchapp is opened on the watch, the listener service should be bounded and the
 start callback called.
 
+### Receive data logs
+
+Data logging is the store-and-forward alternative to messages. The watchapp writes fixed-size items to
+the watch storage with
+[data_logging_log()](https://developer.rebble.io/guides/communication/datalogging/), also when the
+phone is out of range. The watch sends the items when it is connected.
+
+To receive the logged data, override the data log callbacks of the `BasePebbleListenerService`:
+
+```kotlin
+override suspend fun onDataLogReceived(
+    watchappUUID: UUID,
+    session: DataLogSession,
+    data: ByteArray,
+    itemsLeft: Long,
+    watch: WatchIdentifier,
+): ReceiveResult {
+    // data contains data.size / session.itemSize items, in the sequence the watchapp logged them
+    return ReceiveResult.Ack
+}
+
+override suspend fun onDataLogSessionFinished(
+    watchappUUID: UUID,
+    session: DataLogSession,
+    watch: WatchIdentifier,
+): ReceiveResult {
+    // the watchapp called data_logging_finish() and the watch sent all the data of the session
+    return ReceiveResult.Ack
+}
+```
+
+The watchapp UUID, the `tag` from `data_logging_create()` and the `timestamp` of the session start
+identify a session (see `DataLogSession`). Two recordings come as two different sessions.
+
+Return `ReceiveResult.Ack` only after you stored the data. The Pebble app can then discard it. Return
+`ReceiveResult.Nack` if you could not store the data. The Pebble app can then try the delivery again
+later. The Pebble app can send the same batch more than one time; store the items so that a repeated
+batch does not add duplicate data.
+
+Data logs are different from messages: they are not connected to an open watchapp. The watch can send
+stored data at all times, for example when it connects again after it was out of range. Android can
+thus bind your service at all times.
+
 ### Starting/stopping the app
 
 You can call `sender.startAppOnTheWatch()` and `sender.stopAppOnTheWatch()` to start/stop your app on the watch

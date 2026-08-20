@@ -7,6 +7,7 @@ import androidx.core.os.bundleOf
 import io.rebble.pebblekit2.PebbleKitBundleKeys
 import io.rebble.pebblekit2.common.PebbleKitIntents
 import io.rebble.pebblekit2.common.UniversalRequestResponse
+import io.rebble.pebblekit2.common.model.DataLogSession
 import io.rebble.pebblekit2.common.model.PebbleDictionary
 import io.rebble.pebblekit2.common.model.ReceiveResult
 import io.rebble.pebblekit2.common.model.WatchIdentifier
@@ -59,6 +60,60 @@ public class DefaultPebbleListenerConnector(
             PebbleKitBundleKeys.KEY_WATCH_ID to watch.value
         )
 
+        return requestReceiveResult(connection, bundle)
+    }
+
+    /**
+     * Send a batch of items from a data logging [session] of one of the registered apps to the
+     * target app.
+     *
+     * @return null if the target app could not be reached
+     */
+    override suspend fun sendOnDataLogReceived(
+        watchappUUID: UUID,
+        session: DataLogSession,
+        data: ByteArray,
+        itemsLeft: Long,
+        watch: WatchIdentifier,
+    ): ReceiveResult? {
+        val connection = connector.getOrConnect() ?: return null
+
+        val bundle = bundleOf(
+            PebbleKitBundleKeys.KEY_ACTION to PebbleKitBundleKeys.ACTION_DATA_LOG_RECEIVED,
+            PebbleKitBundleKeys.KEY_WATCHAPP_UUID to watchappUUID.toString(),
+            PebbleKitBundleKeys.KEY_DATA_LOG_SESSION to session.toBundle(),
+            PebbleKitBundleKeys.KEY_DATA_LOG_DATA to data,
+            PebbleKitBundleKeys.KEY_DATA_LOG_ITEMS_LEFT to itemsLeft,
+            PebbleKitBundleKeys.KEY_WATCH_ID to watch.value
+        )
+
+        return requestReceiveResult(connection, bundle)
+    }
+
+    /**
+     * Tell the target app that a data logging [session] of one of the registered apps is complete.
+     * Send this only after the target app acknowledged all the batches of the session.
+     *
+     * @return null if the target app could not be reached
+     */
+    override suspend fun sendOnDataLogSessionFinished(
+        watchappUUID: UUID,
+        session: DataLogSession,
+        watch: WatchIdentifier,
+    ): ReceiveResult? {
+        val connection = connector.getOrConnect() ?: return null
+
+        val bundle = bundleOf(
+            PebbleKitBundleKeys.KEY_ACTION to PebbleKitBundleKeys.ACTION_DATA_LOG_SESSION_FINISHED,
+            PebbleKitBundleKeys.KEY_WATCHAPP_UUID to watchappUUID.toString(),
+            PebbleKitBundleKeys.KEY_DATA_LOG_SESSION to session.toBundle(),
+            PebbleKitBundleKeys.KEY_WATCH_ID to watch.value
+        )
+
+        return requestReceiveResult(connection, bundle)
+    }
+
+    private suspend fun requestReceiveResult(connection: UniversalRequestResponse, bundle: Bundle): ReceiveResult? {
         val returnBundle = try {
             connection.request(bundle) ?: return null
         } catch (e: IllegalArgumentException) {

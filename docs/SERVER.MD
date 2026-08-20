@@ -62,6 +62,43 @@ delay(5.seconds)
 connector.close()
 ```
 
+# Forward data logging to apps
+
+The watch sends data logging items of third-party watchapps (see
+[Datalogging](https://developer.rebble.io/guides/communication/datalogging/)). Forward each batch to
+the companion app of the watchapp through the same `PebbleListenerConnector`:
+
+```kotlin
+val result = connector.sendOnDataLogReceived(watchappUUID, session, data, itemsLeft, watch)
+```
+
+A batch must contain only whole items: `data.size` must be a multiple of `session.itemSize`. Send
+the batches of one session in sequence: await the result of a call before you send the next batch
+of that session. Keep one call well below the 1 MB Android binder transaction limit; do not put
+more than 100 KB of data into one call.
+
+The watch closes a session after it sent all of its data. When the companion app has acknowledged
+all the batches of the session, call:
+
+```kotlin
+val result = connector.sendOnDataLogSessionFinished(watchappUUID, session, watch)
+```
+
+Data logging is different from messages: it is not connected to an open watchapp. The watch sends
+stored data each time it is connected. The bind operation wakes the companion app. Thus make these
+calls also outside of the app opened/closed window.
+
+The result tells you what to do with the data. `ReceiveResult.Ack` means that the companion app
+stored the data. You can then discard it. `ReceiveResult.Nack`, `ReceiveResult.Unknown` (the
+companion app has an old PebbleKit library) and `null` (no connection to the app) mean that the
+companion app did not store the data. Keep the data and send it again later, a limited number of
+times. Discard the data when the attempts are used up or when the companion app is no longer
+installed; do not retry without a limit. The companion app must tolerate a batch that it gets more
+than one time, so a retry after an unclear result is safe.
+
+The watch deletes its copy when the Pebble app confirms the receipt on the Pebble protocol level.
+Data that the companion app did not acknowledge lives only in the Pebble app; treat it with care.
+
 # Implementing status provider
 
 To allow apps to access various infos about the status of the watch and the connection, you have to implement the
