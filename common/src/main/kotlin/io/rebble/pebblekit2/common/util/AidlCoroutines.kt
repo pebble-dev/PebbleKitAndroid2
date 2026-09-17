@@ -9,13 +9,13 @@ import io.rebble.pebblekit2.common.SendDataCallback
 import io.rebble.pebblekit2.common.UniversalRequestResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 public suspend fun UniversalRequestResponse.request(
     bundle: Bundle,
-): Bundle? = suspendCoroutine { cont ->
+): Bundle? = suspendCancellableCoroutine { cont ->
     val callback = object : SendDataCallback.Stub() {
         override fun onResult(bundle: Bundle) {
             cont.resume(bundle)
