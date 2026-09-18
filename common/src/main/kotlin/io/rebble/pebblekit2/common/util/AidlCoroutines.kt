@@ -3,29 +3,48 @@ package io.rebble.pebblekit2.common.util
 import android.content.Context
 import android.os.Bundle
 import android.os.DeadObjectException
+import android.os.IBinder
+import android.os.RemoteException
 import co.touchlab.kermit.Logger
 import io.rebble.pebblekit2.PebbleKitBundleKeys
 import io.rebble.pebblekit2.common.SendDataCallback
 import io.rebble.pebblekit2.common.UniversalRequestResponse
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 public suspend fun UniversalRequestResponse.request(
     bundle: Bundle,
-): Bundle? = suspendCoroutine { cont ->
+): Bundle? {
+    val binder = asBinder()
+    val result = CompletableDeferred<Bundle?>()
+    val deathRecipient = IBinder.DeathRecipient { result.complete(null) }
     val callback = object : SendDataCallback.Stub() {
         override fun onResult(bundle: Bundle) {
-            cont.resume(bundle)
+            result.complete(bundle)
         }
     }
 
     try {
+        binder.linkToDeath(deathRecipient, 0)
+    } catch (ignored: RemoteException) {
+        // Already dead
+        return null
+    }
+    try {
         request(bundle, callback)
     } catch (ignored: DeadObjectException) {
-        cont.resume(null)
+        result.complete(null)
+    }
+    try {
+        return result.await()
+    } finally {
+        try {
+            binder.unlinkToDeath(deathRecipient, 0)
+        } catch (ignored: NoSuchElementException) {
+            // The link is already removed when the binder died
+        }
     }
 }
 
