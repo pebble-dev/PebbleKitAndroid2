@@ -40,7 +40,11 @@ public suspend fun UniversalRequestResponse.request(
     try {
         return result.await()
     } finally {
-        runCatching { binder.unlinkToDeath(deathRecipient, 0) }
+        try {
+            binder.unlinkToDeath(deathRecipient, 0)
+        } catch (ignored: NoSuchElementException) {
+            // The link is already removed when the binder died
+        }
     }
 }
 
