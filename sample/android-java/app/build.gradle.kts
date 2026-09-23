@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace = "io.rebble.pebblekit2.sample"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "io.rebble.pebblekit2.sample"
