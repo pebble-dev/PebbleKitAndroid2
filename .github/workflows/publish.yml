@@ -52,10 +52,23 @@ jobs:
           packages: platform-tools
       - name: Validate Gradle Wrapper
         uses: gradle/actions/wrapper-validation@ac638b010cf58a27ee6c972d7336334ccaf61c96
+      - name: Install uv
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+      - name: Install pebble SDK
+        run: "uv tool install pebble-tool && pebble sdk install latest"
       - name: Compile library
         run: "./gradlew --parallel assemble"
       - name: Lint
         run: "./gradlew --continue --parallel lintDebug detektMain detektTest detektDebugUnitTest buildHealth reportMerge --continue"
+      - name: Compile android kotlin sample
+        run: "./gradlew --parallel assembleDebug"
+        working-directory: sample/android
+      - name: Compile android java sample
+        run: "./gradlew --parallel assembleDebug"
+        working-directory: sample/android-java
+      - name: Compile pebble sample
+        run: "pebble build"
+        working-directory: sample/watch
       - name: Generate Changelog
         id: changelog
         uses: inovait/actions-common/git-changelog-generator@e39161d71d6b0200b425ed4145cc4cc080c4cf56
